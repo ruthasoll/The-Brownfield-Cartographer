@@ -16,6 +16,12 @@
       "type": "transformation"
     },
     "customers": {
+      "name": "customers",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
       "type": "dataset"
     },
     "trans_dbt_model_orders": {
@@ -34,6 +40,12 @@
       "type": "transformation"
     },
     "orders": {
+      "name": "orders",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
       "type": "dataset"
     },
     "trans_dbt_model_stg_customers": {
@@ -52,6 +64,12 @@
       "type": "transformation"
     },
     "stg_customers": {
+      "name": "stg_customers",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
       "type": "dataset"
     },
     "trans_dbt_model_stg_orders": {
@@ -70,6 +88,12 @@
       "type": "transformation"
     },
     "stg_orders": {
+      "name": "stg_orders",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
       "type": "dataset"
     },
     "trans_dbt_model_stg_payments": {
@@ -88,29 +112,50 @@
       "type": "transformation"
     },
     "stg_payments": {
+      "name": "stg_payments",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
       "type": "dataset"
     }
   },
   "edges": [
     [
       "trans_dbt_model_customers",
-      "customers"
+      "customers",
+      {
+        "rel": "produces"
+      }
     ],
     [
       "trans_dbt_model_orders",
-      "orders"
+      "orders",
+      {
+        "rel": "produces"
+      }
     ],
     [
       "trans_dbt_model_stg_customers",
-      "stg_customers"
+      "stg_customers",
+      {
+        "rel": "produces"
+      }
     ],
     [
       "trans_dbt_model_stg_orders",
-      "stg_orders"
+      "stg_orders",
+      {
+        "rel": "produces"
+      }
     ],
     [
       "trans_dbt_model_stg_payments",
-      "stg_payments"
+      "stg_payments",
+      {
+        "rel": "produces"
+      }
     ]
   ]
 }

@@ -5,79 +5,84 @@
       "language": "yaml",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 26.0,
+      "complexity_score": 0.10309287459263212,
       "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
+      "is_dead_code_candidate": true,
       "last_modified": null,
       "imports": [],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\customers.sql": {
       "path": "models\\customers.sql",
       "language": "sql",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 69.0,
+      "complexity_score": 0.10309287459263212,
       "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
+      "is_dead_code_candidate": true,
       "last_modified": null,
       "imports": [
+        "stg_payments",
         "stg_orders",
-        "stg_customers",
-        "stg_payments"
+        "stg_customers"
       ],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\orders.sql": {
       "path": "models\\orders.sql",
       "language": "sql",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 56.0,
+      "complexity_score": 0.10309287459263212,
       "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
+      "is_dead_code_candidate": true,
       "last_modified": null,
       "imports": [
-        "stg_orders",
-        "stg_payments"
+        "stg_payments",
+        "stg_orders"
       ],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\schema.yml": {
       "path": "models\\schema.yml",
       "language": "yaml",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 82.0,
+      "complexity_score": 0.10309287459263212,
       "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
+      "is_dead_code_candidate": true,
       "last_modified": null,
       "imports": [],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\staging\\schema.yml": {
       "path": "models\\staging\\schema.yml",
       "language": "yaml",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 31.0,
+      "complexity_score": 0.10309287459263212,
       "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
+      "is_dead_code_candidate": true,
       "last_modified": null,
       "imports": [],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\staging\\stg_customers.sql": {
       "path": "models\\staging\\stg_customers.sql",
       "language": "sql",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 22.0,
+      "complexity_score": 0.1323023751357893,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -85,14 +90,15 @@
         "raw_customers"
       ],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\staging\\stg_orders.sql": {
       "path": "models\\staging\\stg_orders.sql",
       "language": "sql",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 23.0,
+      "complexity_score": 0.17611662595052502,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -100,14 +106,15 @@
         "raw_orders"
       ],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     },
     "models\\staging\\stg_payments.sql": {
       "path": "models\\staging\\stg_payments.sql",
       "language": "sql",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 25.0,
+      "complexity_score": 0.17611662595052502,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -115,40 +122,45 @@
         "raw_payments"
       ],
       "functions": [],
-      "classes": []
+      "classes": [],
+      "type": "module"
     }
   },
   "edges": [
     [
       "models\\customers.sql",
-      "models\\staging\\stg_orders.sql"
+      "models\\staging\\stg_payments.sql",
+      {
+        "rel": "imports"
+      }
     ],
     [
       "models\\customers.sql",
-      "models\\staging\\stg_customers.sql"
+      "models\\staging\\stg_orders.sql",
+      {
+        "rel": "imports"
+      }
     ],
     [
       "models\\customers.sql",
-      "models\\staging\\stg_payments.sql"
+      "models\\staging\\stg_customers.sql",
+      {
+        "rel": "imports"
+      }
     ],
     [
       "models\\orders.sql",
-      "models\\staging\\stg_orders.sql"
+      "models\\staging\\stg_payments.sql",
+      {
+        "rel": "imports"
+      }
     ],
     [
       "models\\orders.sql",
-      "models\\staging\\stg_payments.sql"
+      "models\\staging\\stg_orders.sql",
+      {
+        "rel": "imports"
+      }
     ]
-  ],
-  "pagerank": {
-    "dbt_project.yml": 0.10309287459263212,
-    "models\\customers.sql": 0.10309287459263212,
-    "models\\orders.sql": 0.10309287459263212,
-    "models\\schema.yml": 0.10309287459263212,
-    "models\\staging\\schema.yml": 0.10309287459263212,
-    "models\\staging\\stg_customers.sql": 0.1323023751357893,
-    "models\\staging\\stg_orders.sql": 0.17611662595052502,
-    "models\\staging\\stg_payments.sql": 0.17611662595052502
-  },
-  "circular_dependencies": []
+  ]
 }
