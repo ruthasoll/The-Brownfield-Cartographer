@@ -23,8 +23,8 @@
       "is_dead_code_candidate": false,
       "last_modified": null,
       "imports": [
-        "stg_customers",
         "stg_orders",
+        "stg_customers",
         "stg_payments"
       ],
       "functions": [],
@@ -121,11 +121,11 @@
   "edges": [
     [
       "models\\customers.sql",
-      "models\\staging\\stg_customers.sql"
+      "models\\staging\\stg_orders.sql"
     ],
     [
       "models\\customers.sql",
-      "models\\staging\\stg_orders.sql"
+      "models\\staging\\stg_customers.sql"
     ],
     [
       "models\\customers.sql",

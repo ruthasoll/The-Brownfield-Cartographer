@@ -1,0 +1,116 @@
+{
+  "nodes": {
+    "trans_dbt_model_customers": {
+      "name": "dbt_model_customers",
+      "source_datasets": [],
+      "target_datasets": [
+        "customers"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "customers": {
+      "type": "dataset"
+    },
+    "trans_dbt_model_orders": {
+      "name": "dbt_model_orders",
+      "source_datasets": [],
+      "target_datasets": [
+        "orders"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "orders": {
+      "type": "dataset"
+    },
+    "trans_dbt_model_stg_customers": {
+      "name": "dbt_model_stg_customers",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_customers"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "stg_customers": {
+      "type": "dataset"
+    },
+    "trans_dbt_model_stg_orders": {
+      "name": "dbt_model_stg_orders",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_orders"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "stg_orders": {
+      "type": "dataset"
+    },
+    "trans_dbt_model_stg_payments": {
+      "name": "dbt_model_stg_payments",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_payments"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "stg_payments": {
+      "type": "dataset"
+    }
+  },
+  "edges": [
+    [
+      "trans_dbt_model_customers",
+      "customers"
+    ],
+    [
+      "trans_dbt_model_orders",
+      "orders"
+    ],
+    [
+      "trans_dbt_model_stg_customers",
+      "stg_customers"
+    ],
+    [
+      "trans_dbt_model_stg_orders",
+      "stg_orders"
+    ],
+    [
+      "trans_dbt_model_stg_payments",
+      "stg_payments"
+    ]
+  ]
+}
