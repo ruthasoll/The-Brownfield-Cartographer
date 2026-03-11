@@ -64,14 +64,42 @@ class PythonDataFlowAnalyzer:
                         ))
                 elif attr_name.startswith("to_"):
                     # This is a sink
-                    pass # Similar logic for sinks
+                    path_node = None
+                    for n, t in captures:
+                        if t == "path" and n.parent == node.parent.parent:
+                             path_node = n
+                    
+                    if path_node:
+                        path_val = content[path_node.start_byte:path_node.end_byte].decode("utf-8").strip("'\"")
+                        transformations.append(TransformationNode(
+                            name=f"pandas_{attr_name}",
+                            source_datasets=["df_variable"],
+                            target_datasets=[path_val],
+                            transformation_type="pandas_write",
+                            source_file=file_path,
+                            line_range=(node.start_point[0] + 1, node.end_point[0] + 1)
+                        ))
 
         return transformations
 
     def detect_spark_io(self, tree, content, file_path) -> List[TransformationNode]:
-        # Spark patterns are often chainable: spark.read.format(...).load(...)
-        # For now, let's look for .load() and .save() calls with string arguments
-        return [] # TODO: Implement more complex pattern matching
+        io_query = """
+        (call
+          function: (attribute
+            object: (attribute object: (identifier) @obj attribute: (identifier) @read_write)
+            attribute: (identifier) @method)
+          arguments: (argument_list (string) @path))
+        """
+        query = Query(self.py_lang, io_query)
+        captures = query.captures(tree.root_node)
+
+        transformations = []
+        for node, tag in captures:
+            if tag == "method":
+                method_name = content[node.start_byte:node.end_byte].decode("utf-8")
+                # Look for .load() or .save()
+                pass # Simple logic similar to pandas
+        return transformations
 
     def detect_sqlalchemy_io(self, tree, content, file_path) -> List[TransformationNode]:
         # Look for session.execute(sql) or engine.execute(sql)
