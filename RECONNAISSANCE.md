@@ -52,7 +52,11 @@ The two primary output models that serve business logic are:
 ### 3. What is the blast radius if the most critical module fails?
 The most critical module is `stg_orders`.
 - **Blast Radius**: If `stg_orders` fails, the `orders` model will fail entirely, and the `customers` model will lose its order-related metrics (`first_order`, `number_of_orders`, etc.) as it depends on `stg_orders` via the `customer_orders` CTE.
-- **Reference**: [models/customers.sql:9](file:///c:/Users/ruths/Desktop/TRP1/The-Brownfield-Cartographer/target_jaffle_shop/models/customers.sql#L9)
+- **Direct Dependents**:
+  - `models/orders.sql` via `{{ ref('stg_orders') }}` at line 5.
+  - `models/customers.sql` via `{{ ref('stg_orders') }}` at line 9.
+- **Indirect Impact**: Downstream tests (defined in `models/staging/schema.yml` and `models/schema.yml`) would also fail.
+- **Reference**: [models/customers.sql:9](file:///c:/Users/ruths/Desktop/TRP1/The-Brownfield-Cartographer/target_jaffle_shop/models/customers.sql#L9), [models/orders.sql:5](file:///c:/Users/ruths/Desktop/TRP1/The-Brownfield-Cartographer/target_jaffle_shop/models/orders.sql#L5)
 
 ### 4. Where is the business logic concentrated vs. distributed?
 - **Staging Layer (`models/staging/`)**: Concentrates on technical "cleaning" and "standardization" (e.g., renaming `id` to `customer_id`, converting cents to dollars in `stg_payments`).
