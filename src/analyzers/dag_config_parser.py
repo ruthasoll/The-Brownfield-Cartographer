@@ -45,7 +45,25 @@ class DAGConfigAnalyzer:
         return transformations
 
     def parse_airflow_dag(self, file_path: str) -> List[TransformationNode]:
-        """Parses Airflow DAG files (Python) for task dependencies."""
-        # This would ideally use tree-sitter or dynamic analysis
-        # For Phase 2, we can implement a basic regex or tree-sitter pattern
-        return []
+        """Parses Airflow DAG files (Python) for task dependencies using regex."""
+        if not file_path.endswith(".py"):
+            return []
+            
+        with open(file_path, "r") as f:
+            content = f.read()
+            
+        import re
+        # Look for >> or << operators
+        deps = re.findall(r"(\w+)\s*>>\s*(\w+)", content)
+        
+        transformations = []
+        for source, target in deps:
+            transformations.append(TransformationNode(
+                name=f"airflow_dep_{source}_{target}",
+                source_datasets=[source],
+                target_datasets=[target],
+                transformation_type="airflow_dag",
+                source_file=file_path,
+                line_range=(1, 1) # Simplified
+            ))
+        return transformations
