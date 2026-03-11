@@ -1,0 +1,34 @@
+[project]
+name = "brownfield-cartographer"
+version = "0.1.0"
+description = "Codebase Intelligence System for FDE Onboarding"
+requires-python = ">=3.11"
+dependencies = [
+    "tree-sitter>=0.21",
+    "tree-sitter-python",
+    "tree-sitter-sql",
+    "tree-sitter-yaml",
+    "sqlglot>=25.0",
+    "networkx>=3.3",
+    "pydantic>=2.8",
+    "pyyaml>=6.0",
+    "gitpython>=3.1",
+    "langgraph",
+    "openai",                    # or google-generativeai if using Gemini
+    "chromadb",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "pre-commit",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+strict = true
