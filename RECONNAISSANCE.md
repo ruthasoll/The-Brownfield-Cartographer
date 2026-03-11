@@ -3,6 +3,37 @@
 ## Why this repo?
 I chose `dbt-labs/jaffle_shop` because it is the canonical example for dbt projects. It contains a representative mix of SQL models, YAML configurations, and seed data (CSVs). It has a well-defined DAG that allows for clear verification of data lineage tracking, which is a core requirement of "The Brownfield Cartographer".
 
+```mermaid
+graph TD
+    subgraph Seeds
+        RC[raw_customers.csv]
+        RO[raw_orders.csv]
+        RP[raw_payments.csv]
+    end
+
+    subgraph Staging
+        SC[stg_customers]
+        SO[stg_orders]
+        SP[stg_payments]
+    end
+
+    subgraph Core
+        C[customers]
+        O[orders]
+    end
+
+    RC --> SC
+    RO --> SO
+    RP --> SP
+
+    SC --> C
+    SO --> C
+    SP --> C
+    
+    SO --> O
+    SP --> O
+```
+
 ## The Five FDE Day-One Questions
 
 ### 1. What is the primary data ingestion path?
