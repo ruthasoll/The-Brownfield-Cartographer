@@ -186,3 +186,7 @@ class TreeSitterAnalyzer:
             return content[node.start_byte : node.end_byte].decode("utf-8").strip()
 
         return walk(tree.root_node)
+
+
+# Backward-compatible alias for test_router.py
+LanguageRouter = TreeSitterAnalyzer
