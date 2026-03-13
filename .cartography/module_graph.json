@@ -3,9 +3,9 @@
     "tr:sql_transform_customers.sql": {
       "name": "sql_transform_customers.sql",
       "source_datasets": [
+        "stg_customers",
         "stg_payments",
-        "stg_orders",
-        "stg_customers"
+        "stg_orders"
       ],
       "target_datasets": [
         "customers"
@@ -343,7 +343,7 @@
       "language": "python",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 126.0,
+      "complexity_score": 128.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -359,7 +359,8 @@
         "import stat",
         "from src.orchestrator import CartographyOrchestrator",
         "from src.graph.knowledge_graph import KnowledgeGraph",
-        "from src.agents.navigator import NavigatorAgent"
+        "from src.agents.navigator import NavigatorAgent",
+        "from src.agents.archivist import ArchivistAgent"
       ],
       "functions": [
         {
@@ -481,7 +482,7 @@
       "language": "python",
       "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 357.0,
+      "complexity_score": 359.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,

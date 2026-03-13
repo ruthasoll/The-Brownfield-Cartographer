@@ -6,6 +6,7 @@ from langchain_core.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
 from src.graph.knowledge_graph import KnowledgeGraph
+from src.agents.archivist import ArchivistAgent
 
 logger = logging.getLogger("NavigatorAgent")
 
@@ -13,8 +14,9 @@ logger = logging.getLogger("NavigatorAgent")
 class NavigatorAgent:
     """Conversational LangGraph agent to query the Knowledge Graph."""
 
-    def __init__(self, kg: KnowledgeGraph):
+    def __init__(self, kg: KnowledgeGraph, archivist: ArchivistAgent = None):
         self.kg = kg
+        self.archivist = archivist
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             logger.warning(
@@ -36,6 +38,11 @@ class NavigatorAgent:
             # Iterate through module purpose statements to find semantic matches
             # A real vector DB would do cosine similarity, here we do a basic keyword/fuzzy search
             # or rely on the LLM to interpret the output of a broad sweep.
+            if self.archivist:
+                self.archivist.log_trace(
+                    "Navigator_Tool: find_implementation", details={"concept": concept}
+                )
+
             concept_lower = concept.lower()
             results = []
             for node, data in kg.graph.nodes(data=True):
@@ -43,17 +50,21 @@ class NavigatorAgent:
                     purpose = data.get("purpose_statement", "").lower()
                     if concept_lower in purpose or concept_lower in node.lower():
                         results.append(
-                            f"Match in Module [{node}] (Method: Semantic Inference)\\nPurpose: {data.get('purpose_statement')}"
+                            f"Match: Module [{node}]\nEvidence: {data.get('purpose_statement')}\nMethod: Semantic Inference"
                         )
                 elif data.get("type") == "transformation":
                     if concept_lower in data.get("name", "").lower():
                         results.append(
-                            f"Match in Transformation [{data.get('name')}] at {data.get('source_file')}:{data.get('line_range')} (Method: Static Parsing)"
+                            f"Match: Transformation [{data.get('name')}]\nEvidence: {data.get('source_file')}:{data.get('line_range')}\nMethod: Static Parsing"
                         )
 
+            if self.archivist:
+                # Update details with match count if possible later, or just log start
+                pass
+
             if not results:
-                return f"No modules or transformations found directly matching the concept '{concept}'. Evidence: Semantic inference over Purpose Statements."
-            return "\\n".join(results[:5])
+                return f"No modules or transformations found directly matching the concept '{concept}'.\nMethod: Semantic Inference (Purpose Statements)"
+            return "\n---\n".join(results[:5])
 
         @tool
         def trace_lineage(
@@ -62,6 +73,12 @@ class NavigatorAgent:
             """Graph search: Traces the data lineage of a dataset/table.
             Returns the sequence of dependencies and transformations.
             """
+            if self.archivist:
+                self.archivist.log_trace(
+                    "Navigator_Tool: trace_lineage",
+                    details={"dataset": dataset, "direction": direction},
+                )
+
             if dataset not in kg.graph:
                 # Try to fuzzy match
                 found = None
@@ -93,15 +110,23 @@ class NavigatorAgent:
                     trace.append(f"<- Supported by Dataset [{v}]")
 
             if not trace:
-                return f"No {direction} dependencies found for {dataset}. (Method: Lineage Graph Traversal)"
+                return f"No {direction} dependencies found for {dataset}.\nEvidence: MultiDiGraph lookup\nMethod: Lineage Graph Traversal"
 
-            return "\\n".join(trace)
+            out = f"Lineage Trace for [{dataset}] ({direction}):\n"
+            out += "\n".join(trace)
+            out += "\nMethod: Graph Traversal (nx.bfs_edges)"
+            return out
 
         @tool
         def blast_radius(module_path: str) -> str:
             """Graph search: Finds everything that breaks if the specified module is changed.
             Includes downstream imports and data lineage dependencies.
             """
+            if self.archivist:
+                self.archivist.log_trace(
+                    "Navigator_Tool: blast_radius", details={"module": module_path}
+                )
+
             # Standardize path
             target = None
             for n in kg.graph.nodes:
@@ -115,19 +140,32 @@ class NavigatorAgent:
             graph = nx.DiGraph(kg.graph)
             try:
                 descendants = nx.descendants(graph, target)
-                if not descendants:
-                    return f"No downstream dependencies found for {target}. It is a leaf node."
+                if self.archivist:
+                    self.archivist.log_trace(
+                        "Navigator_Tool: blast_radius",
+                        details={"module": module_path, "impact_count": len(descendants)},
+                    )
 
-                results = [f"Downstream Blast Radius for {target} (Method: Graph Traversal):"]
-                for d in descendants:
+                results = [f"Downstream Blast Radius for {target}:"]
+                for d in list(descendants)[:20]:
                     d_data = kg.graph.nodes[d]
                     d_type = d_data.get("type", "unknown")
                     if d_type == "module":
-                        results.append(f"- Module imported by: {d}")
+                        results.append(f"- Impacts Module: {d}")
                     else:
                         results.append(f"- Impacts {d_type}: {d}")
-                return "\\n".join(results[:20])  # Limit output size
+
+                results.append(
+                    f"Evidence: Graph descendants lookup ({len(descendants)} total impactors)"
+                )
+                results.append("Method: Graph Traversal (nx.descendants)")
+                return "\n".join(results)
             except Exception as e:
+                if self.archivist:
+                    self.archivist.log_trace(
+                        "Navigator_Tool_Error: blast_radius",
+                        details={"module": module_path, "error": str(e)},
+                    )
                 return f"Error executing Graph Traversal: {e}"
 
         @tool
@@ -142,12 +180,22 @@ class NavigatorAgent:
             if not target:
                 return f"Module '{path}' not found."
 
+            if self.archivist:
+                self.archivist.log_trace("Navigator_Tool: explain_module", details={"path": path})
+
             data = kg.graph.nodes[target]
             purpose = data.get("purpose_statement", "No LLM purpose extracted.")
             complexity = data.get("complexity_score", 0)
             velocity = data.get("change_velocity_30d", 0)
 
-            return f"Module: {target}\\nPurpose: {purpose} (Method: LLM Inference)\\nComplexity Score (PageRank): {complexity}\\nChange Velocity (30d): {velocity} (Method: Git Log)"
+            return (
+                f"Module: {target}\n"
+                f"Evidence: Purpose Header + Git Statistics\n"
+                f"Purpose: {purpose}\n"
+                f"Complexity Score (PageRank): {complexity:.3f}\n"
+                f"Change Velocity (30d): {velocity} commits\n"
+                "Method: LLM Inference + Git Log Analysis"
+            )
 
         return [find_implementation, trace_lineage, blast_radius, explain_module]
 

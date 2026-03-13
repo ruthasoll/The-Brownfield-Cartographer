@@ -113,7 +113,12 @@ def main():
         kg = KnowledgeGraph()
         kg.deserialize(kg_path)
 
-        navigator = NavigatorAgent(kg)
+        # Instantiate archivist for logging query sessions
+        from src.agents.archivist import ArchivistAgent
+
+        archivist = ArchivistAgent(kg, args.graph_dir)
+
+        navigator = NavigatorAgent(kg, archivist=archivist)
         navigator.interactive_shell()
 
     else:
