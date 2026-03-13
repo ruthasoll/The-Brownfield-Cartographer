@@ -22,7 +22,7 @@ class SurveyorAgent:
         self.modules: Dict[str, ModuleNode] = {}
         self.symbol_usage: Counter = Counter()
 
-    def analyze_codebase(self):
+    def analyze_codebase(self, changed_files=None):
         """Orchestrates structural analysis."""
         for root, _, files in os.walk(self.repo_path):
             if ".git" in root or ".venv" in root:
@@ -31,6 +31,16 @@ class SurveyorAgent:
                 if file.endswith((".py", ".sql", ".yml", ".yaml")):
                     file_path = os.path.join(root, file)
                     rel_path = os.path.relpath(file_path, self.repo_path)
+
+                    if changed_files is not None and rel_path.replace("\\", "/") not in [
+                        f.replace("\\", "/") for f in changed_files
+                    ]:
+                        # File unchanged. Try to load it from existing knowledge graph if present
+                        if rel_path in self.kg.graph:
+                            existing_data = self.kg.graph.nodes[rel_path]
+                            if existing_data.get("type") == "module":
+                                self.modules[rel_path] = ModuleNode(**existing_data)
+                        continue
 
                     module_node = self.analyze_module(file_path, rel_path)
                     if module_node:

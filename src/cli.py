@@ -5,8 +5,6 @@ import shutil
 import subprocess
 import logging
 import tempfile
-from src.agents.surveyor import SurveyorAgent
-from src.agents.hydrologist import HydrologistAgent
 
 
 def setup_logging(output_dir: str):
@@ -48,11 +46,15 @@ def main():
     analyze_parser.add_argument(
         "--output-dir", default=".cartography", help="Directory for analysis artifacts"
     )
-    analyze_parser.add_argument(
-        "--git-window", type=int, default=30, help="Days of git history to analyze"
+
+    # Query command
+    query_parser = subparsers.add_parser(
+        "query", help="Interactive LangGraph Navigator for architecture/lineage questions"
     )
-    analyze_parser.add_argument(
-        "--dialect", default="postgres", help="SQL dialect for lineage analysis"
+    query_parser.add_argument(
+        "--graph-dir",
+        default=".cartography",
+        help="Directory containing the serialized knowledge graph",
     )
 
     args = parser.parse_args()
@@ -60,7 +62,7 @@ def main():
     if args.command == "analyze":
         output_dir = os.path.abspath(args.output_dir)
         setup_logging(output_dir)
-        logger = logging.getLogger("Orchestrator")
+        logger = logging.getLogger("CLI")
 
         repo_path = args.repo
         is_temp = False
@@ -73,30 +75,10 @@ def main():
         logger.info(f"Starting orchestration for: {repo_path}")
 
         try:
-            # 1. Surveyor Phase
-            logger.info("Phase 1: Surveyor (Structure & Git)...")
-            surveyor = SurveyorAgent(repo_path)
-            surveyor.analyze_codebase()
-            surveyor.extract_git_velocity(days=args.git_window)
+            from src.orchestrator import CartographyOrchestrator
 
-            module_graph_path = os.path.join(output_dir, "module_graph.json")
-            surveyor.save_graph(module_graph_path)
-            logger.info(f"Surveyor complete. Found {len(surveyor.modules)} modules.")
-
-            # 2. Hydrologist Phase
-            logger.info("Phase 2: Hydrologist (Lineage)...")
-            # Pass dialect if analyzer supported it (we updated SQLLineageAnalyzer to take it)
-            hydrologist = HydrologistAgent(repo_path)
-            hydrologist.sql_analyzer.dialect = args.dialect
-            hydrologist.analyze_lineage()
-
-            lineage_graph_path = os.path.join(output_dir, "lineage_graph.json")
-            hydrologist.save_lineage(lineage_graph_path)
-            logger.info(
-                f"Hydrologist complete. Found {len(hydrologist.transformations)} transformations."
-            )
-
-            logger.info(f"Full analysis complete. Artifacts in {output_dir}")
+            orchestrator = CartographyOrchestrator(repo_path, output_dir)
+            orchestrator.run_pipeline()
 
         except Exception as e:
             import traceback
@@ -115,6 +97,24 @@ def main():
                     func(path)
 
                 shutil.rmtree(repo_path, onerror=remove_readonly)
+
+    elif args.command == "query":
+        from src.graph.knowledge_graph import KnowledgeGraph
+        from src.agents.navigator import NavigatorAgent
+
+        kg_path = os.path.join(args.graph_dir, "lineage_graph.json")
+        if not os.path.exists(kg_path):
+            print(f"Error: Knowledge graph not found at {kg_path}. Run 'analyze' first.")
+            sys.exit(1)
+
+        kg = KnowledgeGraph()
+        kg.deserialize(kg_path)
+
+        navigator = NavigatorAgent(kg)
+        navigator.interactive_shell()
+
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":

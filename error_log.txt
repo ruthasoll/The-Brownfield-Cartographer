@@ -1,16 +1,9 @@
 Traceback (most recent call last):
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\cli.py", line 66, in main
-    surveyor.analyze_codebase()
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\agents\surveyor.py", line 33, in analyze_codebase
-    module_node = self.analyze_module(file_path, rel_path)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\agents\surveyor.py", line 46, in analyze_module
-    struct = self.analyzer.extract_structure(file_path)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\analyzers\tree_sitter_analyzer.py", line 73, in extract_structure
-    "tables": self._extract_sql_tables(tree, content)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\analyzers\tree_sitter_analyzer.py", line 112, in _extract_sql_tables
-    query = Query(self.sql_lang, query_str)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tree_sitter.QueryError: Invalid node type at row 1, column 10: table_reference
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\cli.py", line 79, in main
+    orchestrator.run_pipeline()
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\orchestrator.py", line 93, in run_pipeline
+    self.archivist.generate_CODEBASE_md(self.surveyor)
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\agents\archivist.py", line 65, in generate_CODEBASE_md
+    drift_md = "\n".join([f"- `{m.path}` (Doc string differs from implementation)" for m in modules if "Documentation Drift" in getattr(m, 'purpose_statement', '')])
+                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'NoneType' is not iterable

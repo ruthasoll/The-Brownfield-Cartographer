@@ -13,9 +13,9 @@ logger = logging.getLogger("HydrologistAgent")
 
 
 class HydrologistAgent:
-    def __init__(self, repo_path: str):
+    def __init__(self, kg: KnowledgeGraph, repo_path: str):
         self.repo_path = repo_path
-        self.kg = KnowledgeGraph()
+        self.kg = kg
         self.py_analyzer = PythonDataFlowAnalyzer()
         self.sql_analyzer = SQLLineageAnalyzer()
         self.config_analyzer = DAGConfigAnalyzer()

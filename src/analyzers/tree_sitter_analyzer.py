@@ -1,4 +1,4 @@
-from tree_sitter import Language, Parser, Query
+from tree_sitter import Language, Parser
 import tree_sitter_python as tspython
 import tree_sitter_yaml as tsyaml
 import os
@@ -81,36 +81,43 @@ class TreeSitterAnalyzer:
 
         return {}
 
+    def _walk(self, node, target_type):
+        """Recursively walk the AST and collect nodes of a given type."""
+        results = []
+        if node.type == target_type:
+            results.append(node)
+        for child in node.children:
+            results.extend(self._walk(child, target_type))
+        return results
+
+    def _get_captures(self, query, tree):
+        """No-op kept for compatibility; walking is preferred instead."""
+        return []
+
     def _extract_python_imports(self, tree, content) -> List[str]:
-        query_str = (
-            "(import_statement (dotted_name) @name) (import_from_statement (dotted_name) @name)"
-        )
-        query = Query(self.py_lang, query_str)
-        return [
-            content[node.start_byte : node.end_byte].decode("utf-8")
-            for node, _ in query.captures(tree.root_node)
-        ]
+        imports = []
+        for node in self._walk(tree.root_node, "import_statement"):
+            imports.append(content[node.start_byte : node.end_byte].decode("utf-8").strip())
+        for node in self._walk(tree.root_node, "import_from_statement"):
+            imports.append(content[node.start_byte : node.end_byte].decode("utf-8").strip())
+        return imports
 
     def _extract_python_functions(self, tree, content) -> List[Dict[str, Any]]:
-        query_str = "(function_definition name: (identifier) @name)"
-        query = Query(self.py_lang, query_str)
-        return [
-            {
-                "name": content[node.start_byte : node.end_byte].decode("utf-8"),
-                "is_public": not content[node.start_byte : node.end_byte]
-                .decode("utf-8")
-                .startswith("_"),
-            }
-            for node, _ in query.captures(tree.root_node)
-        ]
+        funcs = []
+        for node in self._walk(tree.root_node, "function_definition"):
+            name_node = node.child_by_field_name("name")
+            if name_node:
+                name = content[name_node.start_byte : name_node.end_byte].decode("utf-8")
+                funcs.append({"name": name, "is_public": not name.startswith("_")})
+        return funcs
 
     def _extract_python_classes(self, tree, content) -> List[str]:
-        query_str = "(class_definition name: (identifier) @name)"
-        query = Query(self.py_lang, query_str)
-        return [
-            content[node.start_byte : node.end_byte].decode("utf-8")
-            for node, _ in query.captures(tree.root_node)
-        ]
+        classes = []
+        for node in self._walk(tree.root_node, "class_definition"):
+            name_node = node.child_by_field_name("name")
+            if name_node:
+                classes.append(content[name_node.start_byte : name_node.end_byte].decode("utf-8"))
+        return classes
 
     def _extract_sql_refs(self, content) -> List[str]:
         import re
@@ -119,32 +126,35 @@ class TreeSitterAnalyzer:
         return list(set(re.findall(r"\{\{\s*ref\(['\"](.+?)['\"]\)\s*\}\}", text)))
 
     def _extract_sql_tables(self, tree, content) -> List[str]:
-        """Deep SQL parsing for table names in FROM, JOIN, and CTEs."""
+        """Deep SQL parsing for table names in FROM, JOIN, and CTEs using AST walking."""
         if not self.sql_lang:
             return []
 
-        # This query targets typical relation identifiers in FROM and JOIN clauses
-        # and CTE names in WITH clauses.
-        query_str = """
-        (relation (identifier) @table)
-        (common_table_expression name: (identifier) @cte)
-        """
-        tables = []
-        ctes = []
         try:
-            query = Query(self.sql_lang, query_str)
-            for node, tag in query.captures(tree.root_node):
-                name = content[node.start_byte : node.end_byte].decode("utf-8").lower()
-                if tag == "table":
-                    tables.append(name)
-                elif tag == "cte":
-                    ctes.append(name)
-        except Exception as e:
-            logger.warning(f"Tree-sitter SQL query error, parsing degraded: {e}")
-            return []
+            tables = []
+            ctes = []
 
-        # Return physical tables that are NOT CTE definitions
-        return list(set([t for t in tables if t not in ctes]))
+            # Collect CTE names
+            for node in self._walk(tree.root_node, "common_table_expression"):
+                name_node = node.child_by_field_name("name")
+                if name_node:
+                    ctes.append(
+                        content[name_node.start_byte : name_node.end_byte].decode("utf-8").lower()
+                    )
+
+            # Collect relation/table names from FROM and JOIN
+            for node in self._walk(tree.root_node, "relation"):
+                ident = next((c for c in node.children if c.type == "identifier"), None)
+                if ident:
+                    tables.append(
+                        content[ident.start_byte : ident.end_byte].decode("utf-8").lower()
+                    )
+
+            # Return physical tables that are NOT CTE definitions
+            return list(set(t for t in tables if t not in ctes))
+        except Exception as e:
+            logger.warning(f"Tree-sitter SQL table extraction error, parsing degraded: {e}")
+            return []
 
     def _extract_yaml_hierarchy(self, tree, content) -> Dict[str, Any]:
         """Recursive YAML walker to extract key hierarchy."""

@@ -1,120 +1,109 @@
-from tree_sitter import Query, Language, Parser
-import tree_sitter_python as tspython
+import re
 from typing import List
 from src.models.nodes import TransformationNode
 
 
 class PythonDataFlowAnalyzer:
     def __init__(self):
-        self.py_lang = Language(tspython.language())
-        self.parser = Parser(self.py_lang)
+        pass
 
     def extract_lineage(self, file_path: str) -> List[TransformationNode]:
         """Extracts lineage information from a Python file."""
-        with open(file_path, "rb") as f:
-            content = f.read()
-            tree = self.parser.parse(content)
+        try:
+            with open(file_path, "rb") as f:
+                content = f.read()
+        except (IOError, OSError):
+            return []
 
         transformations = []
+        transformations.extend(self.detect_pandas_io(content, file_path))
+        transformations.extend(self.detect_spark_io(content, file_path))
+        return transformations
 
-        # Detect pandas read_* and to_*
-        transformations.extend(self.detect_pandas_io(tree, content, file_path))
+    def detect_pandas_io(self, content: bytes, file_path: str) -> List[TransformationNode]:
+        """Detect pandas read_*/to_* I/O using regex."""
+        text = content.decode("utf-8", errors="ignore")
+        transformations = []
 
-        # Detect Spark read/write
-        transformations.extend(self.detect_spark_io(tree, content, file_path))
+        # Match: pd.read_csv("path") or pandas.read_csv("path")
+        read_pattern = re.compile(
+            r'(?:pd|pandas)\.(read_\w+)\s*\(\s*["\']([^"\']+)["\']', re.MULTILINE
+        )
+        for m in read_pattern.finditer(text):
+            attr_name, path_val = m.group(1), m.group(2)
+            lineno = text[: m.start()].count("\n") + 1
+            transformations.append(
+                TransformationNode(
+                    name=f"pandas_{attr_name}",
+                    source_datasets=[path_val],
+                    target_datasets=["df_variable"],
+                    transformation_type="pandas_read",
+                    source_file=file_path,
+                    line_range=(lineno, lineno),
+                )
+            )
 
-        # Detect SQLAlchemy execute
-        transformations.extend(self.detect_sqlalchemy_io(tree, content, file_path))
+        # Match: df.to_csv("path") or df.to_parquet("path")
+        write_pattern = re.compile(r'\.\s*(to_\w+)\s*\(\s*["\']([^"\']+)["\']', re.MULTILINE)
+        for m in write_pattern.finditer(text):
+            attr_name, path_val = m.group(1), m.group(2)
+            lineno = text[: m.start()].count("\n") + 1
+            transformations.append(
+                TransformationNode(
+                    name=f"pandas_{attr_name}",
+                    source_datasets=["df_variable"],
+                    target_datasets=[path_val],
+                    transformation_type="pandas_write",
+                    source_file=file_path,
+                    line_range=(lineno, lineno),
+                )
+            )
 
         return transformations
 
-    def detect_pandas_io(self, tree, content, file_path) -> List[TransformationNode]:
-        # Query for pandas read_csv, read_sql, etc.
-        # Pattern: call(attribute(identifier(pandas), identifier(read_...)), ...)
-        io_query = """
-        (call
-          function: (attribute
-            object: (identifier) @obj
-            attribute: (identifier) @attr)
-          arguments: (argument_list (string) @path))
-        """
-        query = Query(self.py_lang, io_query)
-        captures = query.captures(tree.root_node)
-
+    def detect_spark_io(self, content: bytes, file_path: str) -> List[TransformationNode]:
+        """Detect Spark read/write I/O using regex."""
+        text = content.decode("utf-8", errors="ignore")
         transformations = []
-        for node, tag in captures:
-            if tag == "attr":
-                attr_name = content[node.start_byte : node.end_byte].decode("utf-8")
-                if attr_name.startswith("read_"):
-                    # This is a source
-                    path_node = None
-                    # Find path in capturing nodes
-                    for n, t in captures:
-                        if t == "path" and n.parent == node.parent.parent:  # Simple check
-                            path_node = n
 
-                    if path_node:
-                        path_val = (
-                            content[path_node.start_byte : path_node.end_byte]
-                            .decode("utf-8")
-                            .strip("'\"")
-                        )
-                        transformations.append(
-                            TransformationNode(
-                                name=f"pandas_{attr_name}",
-                                source_datasets=[path_val],
-                                target_datasets=[
-                                    "df_variable"
-                                ],  # Placeholder, would need variable tracking for full depth
-                                transformation_type="pandas_read",
-                                source_file=file_path,
-                                line_range=(node.start_point[0] + 1, node.end_point[0] + 1),
-                            )
-                        )
-                elif attr_name.startswith("to_"):
-                    # This is a sink
-                    path_node = None
-                    for n, t in captures:
-                        if t == "path" and n.parent == node.parent.parent:
-                            path_node = n
+        # Match: spark.read.csv("path") or spark.read.parquet("path")
+        read_pattern = re.compile(
+            r'spark\s*\.\s*read\s*\.\s*(\w+)\s*\(\s*["\']([^"\']+)["\']', re.MULTILINE
+        )
+        for m in read_pattern.finditer(text):
+            fmt, path_val = m.group(1), m.group(2)
+            lineno = text[: m.start()].count("\n") + 1
+            transformations.append(
+                TransformationNode(
+                    name=f"spark_read_{fmt}",
+                    source_datasets=[path_val],
+                    target_datasets=["spark_df"],
+                    transformation_type="spark_read",
+                    source_file=file_path,
+                    line_range=(lineno, lineno),
+                )
+            )
 
-                    if path_node:
-                        path_val = (
-                            content[path_node.start_byte : path_node.end_byte]
-                            .decode("utf-8")
-                            .strip("'\"")
-                        )
-                        transformations.append(
-                            TransformationNode(
-                                name=f"pandas_{attr_name}",
-                                source_datasets=["df_variable"],
-                                target_datasets=[path_val],
-                                transformation_type="pandas_write",
-                                source_file=file_path,
-                                line_range=(node.start_point[0] + 1, node.end_point[0] + 1),
-                            )
-                        )
+        # Match: df.write.parquet("path") or df.write.saveAsTable("table")
+        write_pattern = re.compile(
+            r'\.\s*write\s*\.\s*(\w+)\s*\(\s*["\']([^"\']+)["\']', re.MULTILINE
+        )
+        for m in write_pattern.finditer(text):
+            fmt, path_val = m.group(1), m.group(2)
+            lineno = text[: m.start()].count("\n") + 1
+            transformations.append(
+                TransformationNode(
+                    name=f"spark_write_{fmt}",
+                    source_datasets=["spark_df"],
+                    target_datasets=[path_val],
+                    transformation_type="spark_write",
+                    source_file=file_path,
+                    line_range=(lineno, lineno),
+                )
+            )
 
         return transformations
 
-    def detect_spark_io(self, tree, content, file_path) -> List[TransformationNode]:
-        io_query = """
-        (call
-          function: (attribute
-            object: (attribute object: (identifier) @obj attribute: (identifier) @read_write)
-            attribute: (identifier) @method)
-          arguments: (argument_list (string) @path))
-        """
-        query = Query(self.py_lang, io_query)
-        captures = query.captures(tree.root_node)
-
-        transformations = []
-        for node, tag in captures:
-            if tag == "method":
-                # Look for .load() or .save()
-                pass  # Simple logic similar to pandas
-        return transformations
-
-    def detect_sqlalchemy_io(self, tree, content, file_path) -> List[TransformationNode]:
-        # Look for session.execute(sql) or engine.execute(sql)
+    def detect_sqlalchemy_io(self, content: bytes, file_path: str) -> List[TransformationNode]:
+        # Look for session.execute(sql) or engine.execute(sql) - kept as no-op
         return []
