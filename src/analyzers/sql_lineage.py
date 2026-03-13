@@ -10,34 +10,51 @@ logger = logging.getLogger("SQLLineageAnalyzer")
 
 
 class SQLLineageAnalyzer:
-    def __init__(self, dialect: str = "postgres"):
-        self.dialect = dialect
+    def __init__(self, dialect: str | List[str] = "postgres"):
+        self.dialects = [dialect] if isinstance(dialect, str) else dialect
+        # Common dialects to try if none specified or if preferred fails
+        self.fallback_dialects = ["postgres", "snowflake", "bigquery", "databricks", "duckdb"]
 
     def extract_lineage(self, sql: str, file_path: str) -> List[TransformationNode]:
-        """Extracts lineage with CTE resolution and Jinja awareness."""
+        """Extracts lineage with multi-dialect support and CTE resolution."""
         # 1. Basic Jinja/dbt processing (static extraction of ref/source)
         # This ensures we don't lose lineage if sqlglot fails on Jinja syntax.
         dbt_sources = self._extract_dbt_refs(sql)
 
-        # 2. sqlglot parsing
-        try:
-            # Clean Jinja blocks for sqlglot to help parsing succeed
-            clean_sql = re.sub(r"\{\{.*?\}\}", "placeholder_table", sql)
-            clean_sql = re.sub(r"\{%.*?%\}", "", clean_sql)
+        # 2. sqlglot parsing with multi-dialect fallback
+        # Clean Jinja blocks for sqlglot to help parsing succeed
+        clean_sql = re.sub(r"\{\{.*?\}\}", "placeholder_table", sql)
+        clean_sql = re.sub(r"\{%.*?%\}", "", clean_sql)
 
-            expressions = sqlglot.parse(clean_sql, read=self.dialect)
-        except Exception as e:
+        expressions = []
+        parsed_dialect = None
+
+        # Try specified dialects, then fallbacks
+        to_try = self.dialects + [d for d in self.fallback_dialects if d not in self.dialects]
+
+        for d in to_try:
+            try:
+                expressions = sqlglot.parse(clean_sql, read=d)
+                if expressions and expressions[0]:  # Check if parsing yielded any expressions
+                    parsed_dialect = d
+                    logger.info(f"Successfully parsed {file_path} using dialect: {d}")
+                    break
+            except Exception:
+                # Log the specific error if needed, but for now, just try the next dialect
+                continue
+
+        if not parsed_dialect:
             logger.warning(
-                f"sqlglot failed to parse {file_path}: {e}. Falling back to dbt static extraction."
+                f"sqlglot failed to parse {file_path} with all attempted dialects. Falling back to dbt static extraction."
             )
-            # Fallback to dbt static extraction if sqlglot fails
+            # Fallback to dbt static extraction if sqlglot fails with all dialects
             if dbt_sources:
                 return [
                     TransformationNode(
                         name=f"sql_transform_{os.path.basename(file_path)}",
                         source_datasets=list(dbt_sources),
                         target_datasets=[os.path.basename(file_path).split(".")[0]],  # Best guess
-                        transformation_type="sql_query",
+                        transformation_type="sql_query_static_fallback",
                         source_file=file_path,
                         line_range=(1, len(sql.splitlines())),
                         sql_query_if_applicable=sql,

@@ -43,27 +43,32 @@ class SemanticistAgent:
         self.budget = ContextWindowBudget()
         self.force_static = False
 
+        self.model_name = "gemini-2.0-flash"
+        self.heavy_model_name = "gemini-1.5-pro"
+
         # Initialize Gemini Client if API key is present
         api_key = os.environ.get("GEMINI_API_KEY", "")
         if api_key:
             self.client = genai.Client(api_key=api_key)
-            self.model_name = "gemini-2.5-flash"
         else:
             self.client = None
             logger.warning(
                 "GEMINI_API_KEY not found. Semanticist will degrade to static heuristics."
             )
 
-    def _call_llm(self, prompt: str, system_instruction: str = None) -> Optional[str]:
+    def _call_llm(
+        self, prompt: str, system_instruction: str = None, model: str = None
+    ) -> Optional[str]:
         if self.force_static or not self.client:
             return None
 
+        target_model = model or self.model_name
         try:
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction, temperature=0.1
             )
             response = self.client.models.generate_content(
-                model=self.model_name,
+                model=target_model,
                 contents=prompt,
                 config=config,
             )
@@ -104,17 +109,21 @@ class SemanticistAgent:
         ```
         
         Task:
-        1. Write a strict 2-3 sentence 'purpose statement' explaining ONLY the business function of this code, not the implementation details.
-        2. If the file has a docstring/header comment, compare it to the actual code implementation. Identify if there is "Documentation Drift" (i.e. the code does something the docs don't mention, or vice versa).
+        1. Write a strict 2-3 sentence 'purpose statement' explaining ONLY the business function of this code.
+        2. Identify "Documentation Drift" between the implementation and any docstrings/comments.
         
         Output format exactly as JSON:
         {{
             "purpose_statement": "...",
-            "documentation_drift_detected": true/false
+            "drift_report": {{
+                "detected": true/false,
+                "severity": "none"|"low"|"high",
+                "mismatch_details": "description of the discrepancy"
+            }}
         }}
         """
 
-        system = "You are an expert Forward Deployed Engineer evaluating a codebase. You extract sharp, accurate business purposes from raw code. You strictly return JSON."
+        system = "You are an expert FDE. Extraction MUST be sharp and business-focused. You strictly return JSON."
 
         result = self._call_llm(prompt, system)
         if result:
@@ -125,12 +134,13 @@ class SemanticistAgent:
                 module_node.purpose_statement = parsed.get(
                     "purpose_statement", "LLM Extraction Failed"
                 )
+                module_node.drift_report = parsed.get("drift_report")
 
-                if parsed.get("documentation_drift_detected", False):
-                    # Flag this module as having drift in its domain cluster or specific flag
+                if module_node.drift_report and module_node.drift_report.get("detected"):
                     logger.info(f"Documentation Drift detected in {module_node.path}")
-                    # Could add a generic tag
-                    module_node.purpose_statement += " [WARNING: Documentation Drift Detected]"
+                    module_node.purpose_statement += (
+                        f" [DRIFT: {module_node.drift_report.get('severity')}]"
+                    )
 
             except json.JSONDecodeError:
                 logger.error(f"Failed to parse LLM JSON output for {module_node.path}")
@@ -203,30 +213,37 @@ class SemanticistAgent:
         logger.info(f"Semantic Extraction Complete. Usage: {self.budget.summary()}")
 
     def answer_day_one_questions(self) -> str:
-        """Synthesizes Day-One brief using full architectural context."""
+        """Synthesizes Day-One brief using full architectural context with Pro model and citations."""
         if not self.client:
             return "Cannot generate Day-One brief: LLM Offline."
 
-        # Serialize important pieces of the KG to feed the LLM
-        # 1. High Velocity modules
+        # 1. High Complexity hubs with line data
         hubs = sorted(
             [d for n, d in self.kg.graph.nodes(data=True) if d.get("type") == "module"],
             key=lambda x: x.get("complexity_score", 0),
             reverse=True,
         )[:10]
 
-        # 2. Lineage nodes
+        # 2. Lineage nodes (Datasets & Transformations)
         lineage_nodes = [
-            d
+            (n, d)
             for n, d in self.kg.graph.nodes(data=True)
             if d.get("type") in ["dataset", "transformation"]
         ]
 
-        # We need to construct a compact textual representation to not blow the context limit
         hubs_summary = "\n".join(
             [f"- {m['path']} (Purpose: {m.get('purpose_statement', 'N/A')})" for m in hubs]
         )
-        lineage_summary = f"Total Datasets: {len([n for n in lineage_nodes if n.get('type') == 'dataset'])}, Total Transformations: {len([n for n in lineage_nodes if n.get('type') == 'transformation'])}"
+
+        # Detailed transformation evidence for citations
+        trans_evidence = "\n".join(
+            [
+                f"- Transformation [{d.get('name')}]: Source {d.get('source_file')}:{d.get('line_range')} "
+                f"(Reads: {d.get('source_datasets')}, Writes: {d.get('target_datasets')})"
+                for n, d in lineage_nodes
+                if d.get("type") == "transformation"
+            ][:15]  # Truncate for context window safety
+        )
 
         prompt = f"""
         You are Senior Forward Deployed Engineer analyzing a brownfield repository.
@@ -235,19 +252,28 @@ class SemanticistAgent:
         TOP ARCHITECTURAL HUBS (Critical Path):
         {hubs_summary}
         
-        DATA LINEAGE GRAPH SUMMARY:
-        {lineage_summary}
+        DATA TRANSFORMATIONS & LINEAGE EVIDENCE:
+        {trans_evidence}
         
         Using this context, please answer the 5 FDE Day-One Questions:
         1. What is the primary data ingestion path?
         2. What are the 3-5 most critical output datasets/endpoints?
         3. What is the blast radius if the most critical module fails?
         4. Where is the business logic concentrated vs. distributed?
-        5. What has changed most frequently in the last 90 days (git velocity map)?
+        5. What has changed most frequently in the last 90 days? (Based on provided hubs)
         
-        If the data is insufficient to fully answer, state "Insufficient static evidence to dictate definitively" and provide your best professional hypothesis based on the provided modules.
-        Format as a clean Markdown report.
+        CRITICAL INSTRUCTIONS:
+        - For every answer, you MUST include a "Technical Evidence" section.
+        - The Technical Evidence MUST embed concrete file paths and line-range citations drawn from the provided summaries.
+        - If the data is insufficient to fully answer, state "Insufficient static evidence" but provide your best professional hypothesis with citations.
+        - Do not mention implantation details like variable names unless they are part of the dataset/transformation name.
+        
+        Format as a clean Markdown report using the Pro model's enhanced reasoning.
         """
 
-        result = self._call_llm(prompt, "You construct concise, highly-accurate Day-One Briefs.")
+        result = self._call_llm(
+            prompt,
+            "You construct authoritative Day-One Briefs with precise technical citations.",
+            model=self.heavy_model_name,
+        )
         return result or "Error synthesizing Day-One brief."

@@ -23,7 +23,19 @@ class HydrologistAgent:
         self.audit_log: List[Dict[str, Any]] = []
 
     def analyze_lineage(self):
-        """Orchestrates lineage extraction with multi-analyzer coverage."""
+        """Orchestrates lineage extraction with multi-analyzer coverage.
+
+        UNIFIED DAG MERGING LOGIC:
+        1. Python Analysis: Detects data flow from variable to file (e.g., df.to_csv('out.csv'))
+           using AST parsing. IDs are prefixed with ds: for file-based datasets.
+        2. SQL Analysis: Resolves CTEs and identifies source/target tables from DDL/DML.
+           IDs are normalized to table names (prefixed ds:).
+        3. Config Analysis: Parses dbt/Airflow manifests to identify upstream dependencies
+           and logical model structures.
+        4. Merging: All analyzers contribute TransformationNodes to a shared list.
+           `build_graph` then unifies these into a single MultiDiGraph where nodes are
+           linked by shared dataset IDs (e.g., a SQL target becomes a Python source).
+        """
         for root, _, files in os.walk(self.repo_path):
             if ".git" in root or ".venv" in root:
                 continue
@@ -51,11 +63,17 @@ class HydrologistAgent:
         self.build_graph()
 
     def build_graph(self):
-        """Builds a typed lineage graph with standardized ID prefixes."""
+        """Builds a typed lineage graph with rich edge metadata."""
         for trans in self.transformations:
             # Prefix: tr: for transformation
             trans_node_id = f"tr:{trans.name}"
             self.kg.add_node(trans_node_id, trans, "transformation")
+
+            edge_props = {
+                "file": trans.source_file,
+                "line_range": trans.line_range,
+                "transformation_type": trans.transformation_type,
+            }
 
             for source in trans.source_datasets:
                 # Prefix: ds: for dataset
@@ -66,7 +84,7 @@ class HydrologistAgent:
                 metadata = EdgeMetadata(
                     rel_type=RelationshipType.READS,
                     source_line=trans.line_range[0],
-                    properties={"file": trans.source_file},
+                    properties=edge_props,
                     confidence=1.0,
                 )
                 self.kg.add_edge(ds_id, trans_node_id, metadata)
@@ -79,7 +97,7 @@ class HydrologistAgent:
                 metadata = EdgeMetadata(
                     rel_type=RelationshipType.WRITES,
                     source_line=trans.line_range[0],
-                    properties={"file": trans.source_file},
+                    properties=edge_props,
                     confidence=1.0,
                 )
                 self.kg.add_edge(trans_node_id, ds_id, metadata)

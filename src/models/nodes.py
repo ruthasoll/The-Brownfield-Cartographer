@@ -33,6 +33,7 @@ class ModuleNode(BaseModel):
     imports: List[str] = []
     functions: List[FunctionNode] = []
     classes: List[ClassNode] = []
+    drift_report: Optional[Dict[str, Any]] = None
 
     @validator("path")
     def path_must_not_be_absolute(cls, v):

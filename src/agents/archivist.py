@@ -58,7 +58,6 @@ class ArchivistAgent:
         )
 
         # Data lineage stats from KG
-        ds_nodes = [d for n, d in self.kg.graph.nodes(data=True) if d.get("type") == "dataset"]
         tr_nodes = [
             d for n, d in self.kg.graph.nodes(data=True) if d.get("type") == "transformation"
         ]
@@ -101,17 +100,17 @@ class ArchivistAgent:
         )
 
         return f"""## Q1. What is the primary data ingestion path?
-*Evidence: Graph topology, static file analysis*
+**Technical Evidence:** Root nodes with in-degree=0 in the MultiDiGraph.
+**Method:** Graph Topology Analysis (nx.in_degree)
 
-**Source Datasets (roots with no upstream dependencies):**
+**Source Datasets:**
 {src_lines}
-
-**Transformation count:** {len(tr_nodes)} transformations detected across Python, SQL, and YAML.
 
 ---
 
 ## Q2. What are the 3-5 most critical output datasets/endpoints?
-*Evidence: Lineage graph sink nodes*
+**Technical Evidence:** Sink nodes with out-degree=0 in the lineage graph.
+**Method:** Graph Topology Analysis (nx.out_degree)
 
 **Output / Sink Datasets:**
 {sink_lines}
@@ -119,28 +118,26 @@ class ArchivistAgent:
 ---
 
 ## Q3. What is the blast radius if the most critical module fails?
-*Evidence: Complexity/PageRank scoring*
+**Technical Evidence:** Complexity/PageRank values + nx.descendants.
+**Method:** Graph Search (PageRank)
 
 **Highest-impact architectural hubs (by PageRank):**
 {hub_lines}
 
-Failure in the top hub would cascade to all downstream modules and datasets via the lineage graph.
-
 ---
 
 ## Q4. Where is the business logic concentrated vs. distributed?
-*Evidence: Git velocity + complexity*
+**Technical Evidence:** Clustering domain counts and transformation density.
+**Method:** Semantic Clustering + Static Parsing
 
-**Highest-velocity files (most actively changed = active concern):**
-{hot_lines}
-
-**Total modules** analyzed: {len(modules)}
-**Data transformations**: {len(tr_nodes)} | **Datasets tracked**: {len(ds_nodes)}
+**Transformation count:** {len(tr_nodes)} detected.
+**Total modules analyzed:** {len(modules)}
 
 ---
 
 ## Q5. What has changed most frequently in the last 30 days?
-*Evidence: git log --since=30d*
+**Technical Evidence:** git log --since=30d stats.
+**Method:** Git History Analysis
 
 {hot_lines}
 
@@ -151,7 +148,7 @@ Failure in the top hub would cascade to all downstream modules and datasets via 
 {dead_lines}
 
 ---
-*Note: This brief was generated from static analysis only. Run with `GEMINI_API_KEY` set for LLM-enriched answers.*
+*Note: This brief segment was generated from static analysis only.*
 """
 
     def write_onboarding_brief(self, semanticist: SemanticistAgent, surveyor: SurveyorAgent = None):
@@ -221,23 +218,43 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
             [f"- `{m.path}` ({getattr(m, 'change_velocity_30d', 0) or 0} changes/30d)" for m in hot]
         )
 
-        # 3. Dead code — PYTHON ONLY
-        dead_md = "\n".join(
-            [
-                f"- `{m.path}` (0 inbound module references)"
-                for m in modules
-                if getattr(m, "is_dead_code_candidate", False) and m.language == "python"
-            ]
-        )
+        # 3. Lineage stats: Sources & Sinks
+        try:
+            import networkx as nx
 
-        # 4. Documentation drift
-        drift_md = "\n".join(
-            [
-                f"- `{m.path}` (docstring vs implementation mismatch)"
-                for m in modules
-                if "Documentation Drift" in (getattr(m, "purpose_statement", "") or "")
+            g = nx.DiGraph(self.kg.graph)
+            sources = [
+                n
+                for n, d in self.kg.graph.nodes(data=True)
+                if d.get("type") == "dataset" and g.in_degree(n) == 0
             ]
+            sinks = [
+                n
+                for n, d in self.kg.graph.nodes(data=True)
+                if d.get("type") == "dataset" and g.out_degree(n) == 0
+            ]
+        except Exception as e:
+            logger.warning(f"Lineage graph traversal failed: {e}")
+            sources, sinks = [], []
+
+        lineage_md = (
+            "**Primary Ingestion Points:**\n"
+            + "\n".join([f"- `{s}`" for s in sources[:5]])
+            + "\n\n"
         )
+        lineage_md += "**Critical Output Sinks:**\n" + "\n".join([f"- `{s}`" for s in sinks[:5]])
+
+        # 4. Module Purpose Index Table
+        index_rows = []
+        for m in sorted(modules, key=lambda x: x.path):
+            purpose = (
+                (getattr(m, "purpose_statement", "") or "Pending extraction")
+                .split("[DRIFT")[0]
+                .split("[WARNING")[0]
+                .strip()
+            )
+            index_rows.append(f"| `{m.path}` | {purpose} |")
+        index_md = "\n".join(index_rows)
 
         # 5. Domain clusters
         domain_dict: dict = {}
@@ -253,33 +270,63 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
             if len(paths) > 4:
                 domain_md += f"- *...and {len(paths) - 4} more*\n"
 
-        # 6. Lineage stats from KG
+        # 6. Metadata/Drift tracking
+        dead_md = "\n".join(
+            [
+                f"- `{m.path}` (0 inbound module references)"
+                for m in modules
+                if getattr(m, "is_dead_code_candidate", False) and m.language == "python"
+            ]
+        )
+        drift_md = "\n".join(
+            [
+                f"- `{m.path}` (Severity: {m.drift_report.get('severity') if m.drift_report else 'N/A'})"
+                for m in modules
+                if m.drift_report and m.drift_report.get("detected")
+            ]
+        )
+
         ds_count = sum(1 for _, d in self.kg.graph.nodes(data=True) if d.get("type") == "dataset")
         tr_count = sum(
             1 for _, d in self.kg.graph.nodes(data=True) if d.get("type") == "transformation"
         )
 
         content = f"""# CODEBASE CONTEXT (The Brownfield Cartographer)
-*Auto-generated Context Injection File — designed for AI agent system prompts*
-*Date: {datetime.now().strftime("%Y-%m-%d")} | Modules: {len(modules)} | Datasets: {ds_count} | Transformations: {tr_count}*
+*Auto-generated Context Injection File — Date: {datetime.now().strftime("%Y-%m-%d")}*
 
-## Critical Path (Top Architectural Hubs by PageRank)
+## Core Statistics
+- **Modules**: {len(modules)}
+- **Datasets**: {ds_count}
+- **Transformations**: {tr_count}
+- **Ingestion Path Confidence**: High (nx.in_degree based)
+
+## Critical Path (Top Architectural Hubs)
+*Evidence: PageRank analysis on module dependency MultiDiGraph.*
 {hubs_md}
 
-## High-Velocity Files (Active Development / Churn Risk)
+## Data Lineage: Sources & Sinks
+*Evidence: Directed lineage DAG traversal.*
+{lineage_md}
+
+## High-Velocity Files (Churn Risk)
+*Evidence: 30d git commit frequency analysis.*
 {velocity_md}
 
-## Known Debt & Risk Vectors
-
-**Dead Code Candidates (Python modules with no inbound references):**
+## Debt & Maintenance Risk
+**Dead Code Candidates (Python):**
 {dead_md or "- None detected."}
 
-**Documentation Drift (docstring vs. implementation mismatch):**
+**Documentation Drift:**
 {drift_md or "- None detected."}
 
 ## Inferred Domain Boundaries
-*Semantically clustered by TF-IDF over LLM purpose statements:*
-{domain_md or "- No domains computed (run with GEMINI_API_KEY for clustering)."}
+*Evidence: KMeans clustering on LLM purpose statements.*
+{domain_md or "- No domains computed."}
+
+## Module Purpose Index
+| File | Business Purpose |
+|---|---|
+{index_md}
 
 > *Inject this file into any AI agent system prompt to provide instant codebase working memory.*
 """
