@@ -1,22 +1,26 @@
 {
   "nodes": {
-    "trans_dbt_model_customers": {
-      "name": "dbt_model_customers",
-      "source_datasets": [],
+    "tr:sql_transform_customers.sql": {
+      "name": "sql_transform_customers.sql",
+      "source_datasets": [
+        "stg_payments",
+        "stg_orders",
+        "stg_customers"
+      ],
       "target_datasets": [
         "customers"
       ],
-      "transformation_type": "dbt_model",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
+      "transformation_type": "sql_query",
+      "source_file": "models\\customers.sql",
       "line_range": [
         1,
-        1
+        69
       ],
-      "sql_query_if_applicable": null,
+      "sql_query_if_applicable": "with customers as (\n\n    select * from {{ ref('stg_customers') }}\n\n),\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\npayments as (\n\n    select * from {{ ref('stg_payments') }}\n\n),\n\ncustomer_orders as (\n\n        select\n        customer_id,\n\n        min(order_date) as first_order,\n        max(order_date) as most_recent_order,\n        count(order_id) as number_of_orders\n    from orders\n\n    group by customer_id\n\n),\n\ncustomer_payments as (\n\n    select\n        orders.customer_id,\n        sum(amount) as total_amount\n\n    from payments\n\n    left join orders on\n         payments.order_id = orders.order_id\n\n    group by orders.customer_id\n\n),\n\nfinal as (\n\n    select\n        customers.customer_id,\n        customers.first_name,\n        customers.last_name,\n        customer_orders.first_order,\n        customer_orders.most_recent_order,\n        customer_orders.number_of_orders,\n        customer_payments.total_amount as customer_lifetime_value\n\n    from customers\n\n    left join customer_orders\n        on customers.customer_id = customer_orders.customer_id\n\n    left join customer_payments\n        on  customers.customer_id = customer_payments.customer_id\n\n)\n\nselect * from final\n",
       "type": "transformation"
     },
-    "customers": {
-      "name": "customers",
+    "ds:stg_payments": {
+      "name": "stg_payments",
       "storage_type": "unknown",
       "schema_snapshot": null,
       "freshness_sla": null,
@@ -24,70 +28,7 @@
       "is_source_of_truth": false,
       "type": "dataset"
     },
-    "trans_dbt_model_orders": {
-      "name": "dbt_model_orders",
-      "source_datasets": [],
-      "target_datasets": [
-        "orders"
-      ],
-      "transformation_type": "dbt_model",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
-      "line_range": [
-        1,
-        1
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "orders": {
-      "name": "orders",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
-    },
-    "trans_dbt_model_stg_customers": {
-      "name": "dbt_model_stg_customers",
-      "source_datasets": [],
-      "target_datasets": [
-        "stg_customers"
-      ],
-      "transformation_type": "dbt_model",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
-      "line_range": [
-        1,
-        1
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "stg_customers": {
-      "name": "stg_customers",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
-    },
-    "trans_dbt_model_stg_orders": {
-      "name": "dbt_model_stg_orders",
-      "source_datasets": [],
-      "target_datasets": [
-        "stg_orders"
-      ],
-      "transformation_type": "dbt_model",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
-      "line_range": [
-        1,
-        1
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "stg_orders": {
+    "ds:stg_orders": {
       "name": "stg_orders",
       "storage_type": "unknown",
       "schema_snapshot": null,
@@ -96,14 +37,59 @@
       "is_source_of_truth": false,
       "type": "dataset"
     },
-    "trans_dbt_model_stg_payments": {
-      "name": "dbt_model_stg_payments",
+    "ds:stg_customers": {
+      "name": "stg_customers",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
+      "type": "dataset"
+    },
+    "ds:customers": {
+      "name": "customers",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
+      "type": "dataset"
+    },
+    "tr:sql_transform_orders.sql": {
+      "name": "sql_transform_orders.sql",
+      "source_datasets": [
+        "stg_payments",
+        "stg_orders"
+      ],
+      "target_datasets": [
+        "orders"
+      ],
+      "transformation_type": "sql_query",
+      "source_file": "models\\orders.sql",
+      "line_range": [
+        1,
+        56
+      ],
+      "sql_query_if_applicable": "{% set payment_methods = ['credit_card', 'coupon', 'bank_transfer', 'gift_card'] %}\n\nwith orders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\npayments as (\n\n    select * from {{ ref('stg_payments') }}\n\n),\n\norder_payments as (\n\n    select\n        order_id,\n\n        {% for payment_method in payment_methods -%}\n        sum(case when payment_method = '{{ payment_method }}' then amount else 0 end) as {{ payment_method }}_amount,\n        {% endfor -%}\n\n        sum(amount) as total_amount\n\n    from payments\n\n    group by order_id\n\n),\n\nfinal as (\n\n    select\n        orders.order_id,\n        orders.customer_id,\n        orders.order_date,\n        orders.status,\n\n        {% for payment_method in payment_methods -%}\n\n        order_payments.{{ payment_method }}_amount,\n\n        {% endfor -%}\n\n        order_payments.total_amount as amount\n\n    from orders\n\n\n    left join order_payments\n        on orders.order_id = order_payments.order_id\n\n)\n\nselect * from final\n",
+      "type": "transformation"
+    },
+    "ds:orders": {
+      "name": "orders",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
+      "type": "dataset"
+    },
+    "tr:dbt_model_customers": {
+      "name": "dbt_model_customers",
       "source_datasets": [],
       "target_datasets": [
-        "stg_payments"
+        "customers"
       ],
       "transformation_type": "dbt_model",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+      "source_file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\schema.yml",
       "line_range": [
         1,
         1
@@ -111,8 +97,137 @@
       "sql_query_if_applicable": null,
       "type": "transformation"
     },
-    "stg_payments": {
-      "name": "stg_payments",
+    "tr:dbt_model_orders": {
+      "name": "dbt_model_orders",
+      "source_datasets": [],
+      "target_datasets": [
+        "orders"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "tr:dbt_model_stg_customers": {
+      "name": "dbt_model_stg_customers",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_customers"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "tr:dbt_model_stg_orders": {
+      "name": "dbt_model_stg_orders",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_orders"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "tr:dbt_model_stg_payments": {
+      "name": "dbt_model_stg_payments",
+      "source_datasets": [],
+      "target_datasets": [
+        "stg_payments"
+      ],
+      "transformation_type": "dbt_model",
+      "source_file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml",
+      "line_range": [
+        1,
+        1
+      ],
+      "sql_query_if_applicable": null,
+      "type": "transformation"
+    },
+    "tr:sql_transform_stg_customers.sql": {
+      "name": "sql_transform_stg_customers.sql",
+      "source_datasets": [
+        "raw_customers"
+      ],
+      "target_datasets": [
+        "stg_customers"
+      ],
+      "transformation_type": "sql_query",
+      "source_file": "models\\staging\\stg_customers.sql",
+      "line_range": [
+        1,
+        22
+      ],
+      "sql_query_if_applicable": "with source as (\n\n    {#-\n    Normally we would select from the table here, but we are using seeds to load\n    our data in this project\n    #}\n    select * from {{ ref('raw_customers') }}\n\n),\n\nrenamed as (\n\n    select\n        id as customer_id,\n        first_name,\n        last_name\n\n    from source\n\n)\n\nselect * from renamed\n",
+      "type": "transformation"
+    },
+    "ds:raw_customers": {
+      "name": "raw_customers",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
+      "type": "dataset"
+    },
+    "tr:sql_transform_stg_orders.sql": {
+      "name": "sql_transform_stg_orders.sql",
+      "source_datasets": [
+        "raw_orders"
+      ],
+      "target_datasets": [
+        "stg_orders"
+      ],
+      "transformation_type": "sql_query",
+      "source_file": "models\\staging\\stg_orders.sql",
+      "line_range": [
+        1,
+        23
+      ],
+      "sql_query_if_applicable": "with source as (\n\n    {#-\n    Normally we would select from the table here, but we are using seeds to load\n    our data in this project\n    #}\n    select * from {{ ref('raw_orders') }}\n\n),\n\nrenamed as (\n\n    select\n        id as order_id,\n        user_id as customer_id,\n        order_date,\n        status\n\n    from source\n\n)\n\nselect * from renamed\n",
+      "type": "transformation"
+    },
+    "ds:raw_orders": {
+      "name": "raw_orders",
+      "storage_type": "unknown",
+      "schema_snapshot": null,
+      "freshness_sla": null,
+      "owner": null,
+      "is_source_of_truth": false,
+      "type": "dataset"
+    },
+    "tr:sql_transform_stg_payments.sql": {
+      "name": "sql_transform_stg_payments.sql",
+      "source_datasets": [
+        "raw_payments"
+      ],
+      "target_datasets": [
+        "stg_payments"
+      ],
+      "transformation_type": "sql_query",
+      "source_file": "models\\staging\\stg_payments.sql",
+      "line_range": [
+        1,
+        25
+      ],
+      "sql_query_if_applicable": "with source as (\n    \n    {#-\n    Normally we would select from the table here, but we are using seeds to load\n    our data in this project\n    #}\n    select * from {{ ref('raw_payments') }}\n\n),\n\nrenamed as (\n\n    select\n        id as payment_id,\n        order_id,\n        payment_method,\n\n        -- `amount` is currently stored in cents, so we convert it to dollars\n        amount / 100 as amount\n\n    from source\n\n)\n\nselect * from renamed\n",
+      "type": "transformation"
+    },
+    "ds:raw_payments": {
+      "name": "raw_payments",
       "storage_type": "unknown",
       "schema_snapshot": null,
       "freshness_sla": null,
@@ -122,40 +237,257 @@
     }
   },
   "edges": [
-    [
-      "trans_dbt_model_customers",
-      "customers",
-      {
-        "rel": "produces"
+    {
+      "source": "tr:sql_transform_customers.sql",
+      "target": "ds:customers",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
       }
-    ],
-    [
-      "trans_dbt_model_orders",
-      "orders",
-      {
-        "rel": "produces"
+    },
+    {
+      "source": "ds:stg_payments",
+      "target": "tr:sql_transform_customers.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
       }
-    ],
-    [
-      "trans_dbt_model_stg_customers",
-      "stg_customers",
-      {
-        "rel": "produces"
+    },
+    {
+      "source": "ds:stg_payments",
+      "target": "tr:sql_transform_orders.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\orders.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
       }
-    ],
-    [
-      "trans_dbt_model_stg_orders",
-      "stg_orders",
-      {
-        "rel": "produces"
+    },
+    {
+      "source": "ds:stg_orders",
+      "target": "tr:sql_transform_customers.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
       }
-    ],
-    [
-      "trans_dbt_model_stg_payments",
-      "stg_payments",
-      {
-        "rel": "produces"
+    },
+    {
+      "source": "ds:stg_orders",
+      "target": "tr:sql_transform_orders.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\orders.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
       }
-    ]
+    },
+    {
+      "source": "ds:stg_customers",
+      "target": "tr:sql_transform_customers.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:sql_transform_orders.sql",
+      "target": "ds:orders",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\orders.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:dbt_model_customers",
+      "target": "ds:customers",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\schema.yml"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:dbt_model_orders",
+      "target": "ds:orders",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\schema.yml"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:dbt_model_stg_customers",
+      "target": "ds:stg_customers",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:dbt_model_stg_orders",
+      "target": "ds:stg_orders",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:dbt_model_stg_payments",
+      "target": "ds:stg_payments",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "C:\\Users\\ruths\\AppData\\Local\\Temp\\cartography_gm4gpviu\\models\\staging\\schema.yml"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:sql_transform_stg_customers.sql",
+      "target": "ds:stg_customers",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "ds:raw_customers",
+      "target": "tr:sql_transform_stg_customers.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_customers.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:sql_transform_stg_orders.sql",
+      "target": "ds:stg_orders",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_orders.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "ds:raw_orders",
+      "target": "tr:sql_transform_stg_orders.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_orders.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "tr:sql_transform_stg_payments.sql",
+      "target": "ds:stg_payments",
+      "key": "writes",
+      "metadata": {
+        "rel_type": "writes",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_payments.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    },
+    {
+      "source": "ds:raw_payments",
+      "target": "tr:sql_transform_stg_payments.sql",
+      "key": "reads",
+      "metadata": {
+        "rel_type": "reads",
+        "weight": 1.0,
+        "properties": {
+          "file": "models\\staging\\stg_payments.sql"
+        },
+        "source_line": 1,
+        "confidence": 1.0
+      }
+    }
   ]
 }

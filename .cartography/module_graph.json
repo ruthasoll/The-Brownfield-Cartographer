@@ -127,40 +127,75 @@
     }
   },
   "edges": [
-    [
-      "models\\customers.sql",
-      "models\\staging\\stg_payments.sql",
-      {
-        "rel": "imports"
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_payments.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_payments"
+        },
+        "source_line": null,
+        "confidence": 0.9
       }
-    ],
-    [
-      "models\\customers.sql",
-      "models\\staging\\stg_orders.sql",
-      {
-        "rel": "imports"
+    },
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_orders.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_orders"
+        },
+        "source_line": null,
+        "confidence": 0.9
       }
-    ],
-    [
-      "models\\customers.sql",
-      "models\\staging\\stg_customers.sql",
-      {
-        "rel": "imports"
+    },
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_customers.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_customers"
+        },
+        "source_line": null,
+        "confidence": 0.9
       }
-    ],
-    [
-      "models\\orders.sql",
-      "models\\staging\\stg_payments.sql",
-      {
-        "rel": "imports"
+    },
+    {
+      "source": "models\\orders.sql",
+      "target": "models\\staging\\stg_payments.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_payments"
+        },
+        "source_line": null,
+        "confidence": 0.9
       }
-    ],
-    [
-      "models\\orders.sql",
-      "models\\staging\\stg_orders.sql",
-      {
-        "rel": "imports"
+    },
+    {
+      "source": "models\\orders.sql",
+      "target": "models\\staging\\stg_orders.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_orders"
+        },
+        "source_line": null,
+        "confidence": 0.9
       }
-    ]
+    }
   ]
 }

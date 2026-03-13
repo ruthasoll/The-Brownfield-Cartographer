@@ -1,7 +1,8 @@
 from tree_sitter import Query, Language, Parser
 import tree_sitter_python as tspython
-from typing import List, Dict, Any, Optional
-from src.models.nodes import DatasetNode, TransformationNode
+from typing import List
+from src.models.nodes import TransformationNode
+
 
 class PythonDataFlowAnalyzer:
     def __init__(self):
@@ -15,13 +16,13 @@ class PythonDataFlowAnalyzer:
             tree = self.parser.parse(content)
 
         transformations = []
-        
+
         # Detect pandas read_* and to_*
         transformations.extend(self.detect_pandas_io(tree, content, file_path))
-        
+
         # Detect Spark read/write
         transformations.extend(self.detect_spark_io(tree, content, file_path))
-        
+
         # Detect SQLAlchemy execute
         transformations.extend(self.detect_sqlalchemy_io(tree, content, file_path))
 
@@ -43,42 +44,56 @@ class PythonDataFlowAnalyzer:
         transformations = []
         for node, tag in captures:
             if tag == "attr":
-                attr_name = content[node.start_byte:node.end_byte].decode("utf-8")
+                attr_name = content[node.start_byte : node.end_byte].decode("utf-8")
                 if attr_name.startswith("read_"):
                     # This is a source
                     path_node = None
                     # Find path in capturing nodes
                     for n, t in captures:
-                        if t == "path" and n.parent == node.parent.parent: # Simple check
-                             path_node = n
-                    
+                        if t == "path" and n.parent == node.parent.parent:  # Simple check
+                            path_node = n
+
                     if path_node:
-                        path_val = content[path_node.start_byte:path_node.end_byte].decode("utf-8").strip("'\"")
-                        transformations.append(TransformationNode(
-                            name=f"pandas_{attr_name}",
-                            source_datasets=[path_val],
-                            target_datasets=["df_variable"], # Placeholder, would need variable tracking for full depth
-                            transformation_type="pandas_read",
-                            source_file=file_path,
-                            line_range=(node.start_point[0] + 1, node.end_point[0] + 1)
-                        ))
+                        path_val = (
+                            content[path_node.start_byte : path_node.end_byte]
+                            .decode("utf-8")
+                            .strip("'\"")
+                        )
+                        transformations.append(
+                            TransformationNode(
+                                name=f"pandas_{attr_name}",
+                                source_datasets=[path_val],
+                                target_datasets=[
+                                    "df_variable"
+                                ],  # Placeholder, would need variable tracking for full depth
+                                transformation_type="pandas_read",
+                                source_file=file_path,
+                                line_range=(node.start_point[0] + 1, node.end_point[0] + 1),
+                            )
+                        )
                 elif attr_name.startswith("to_"):
                     # This is a sink
                     path_node = None
                     for n, t in captures:
                         if t == "path" and n.parent == node.parent.parent:
-                             path_node = n
-                    
+                            path_node = n
+
                     if path_node:
-                        path_val = content[path_node.start_byte:path_node.end_byte].decode("utf-8").strip("'\"")
-                        transformations.append(TransformationNode(
-                            name=f"pandas_{attr_name}",
-                            source_datasets=["df_variable"],
-                            target_datasets=[path_val],
-                            transformation_type="pandas_write",
-                            source_file=file_path,
-                            line_range=(node.start_point[0] + 1, node.end_point[0] + 1)
-                        ))
+                        path_val = (
+                            content[path_node.start_byte : path_node.end_byte]
+                            .decode("utf-8")
+                            .strip("'\"")
+                        )
+                        transformations.append(
+                            TransformationNode(
+                                name=f"pandas_{attr_name}",
+                                source_datasets=["df_variable"],
+                                target_datasets=[path_val],
+                                transformation_type="pandas_write",
+                                source_file=file_path,
+                                line_range=(node.start_point[0] + 1, node.end_point[0] + 1),
+                            )
+                        )
 
         return transformations
 
@@ -96,9 +111,8 @@ class PythonDataFlowAnalyzer:
         transformations = []
         for node, tag in captures:
             if tag == "method":
-                method_name = content[node.start_byte:node.end_byte].decode("utf-8")
                 # Look for .load() or .save()
-                pass # Simple logic similar to pandas
+                pass  # Simple logic similar to pandas
         return transformations
 
     def detect_sqlalchemy_io(self, tree, content, file_path) -> List[TransformationNode]:

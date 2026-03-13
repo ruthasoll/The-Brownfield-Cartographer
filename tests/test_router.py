@@ -1,16 +1,12 @@
 from src.analyzers.tree_sitter_analyzer import LanguageRouter
-import os
+
 
 def test_language_router():
     router = LanguageRouter()
-    
+
     # Test cases: (file_path, expected_language_name)
-    test_files = [
-        ("test.py", "python"),
-        ("test.yaml", "yaml"),
-        ("test.sql", "sql")
-    ]
-    
+    test_files = [("test.py", "python"), ("test.yaml", "yaml"), ("test.sql", "sql")]
+
     for file_name, lang_name in test_files:
         parser = router.get_parser(file_name)
         if parser:
@@ -26,6 +22,7 @@ def test_language_router():
             print("PASS: Successfully parsed simple Python code")
         else:
             print(f"FAIL: Unexpected tree root type: {tree.root_node.type}")
+
 
 if __name__ == "__main__":
     test_language_router()
