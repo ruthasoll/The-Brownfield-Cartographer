@@ -13,9 +13,10 @@ logger = logging.getLogger("Orchestrator")
 class CartographyOrchestrator:
     """Manages the full multi-agent Cartographer pipeline."""
 
-    def __init__(self, repo_path: str, output_dir: str):
+    def __init__(self, repo_path: str, output_dir: str, no_llm: bool = False):
         self.repo_path = repo_path
         self.output_dir = output_dir
+        self.no_llm = no_llm
         self.kg = KnowledgeGraph()
         self.changed_files = None
 
@@ -38,7 +39,10 @@ class CartographyOrchestrator:
         self.surveyor.kg = self.kg  # Link shared KG
         self.hydrologist = HydrologistAgent(self.kg, repo_path)
         self.semanticist = SemanticistAgent(self.kg, repo_path)
-        self.archivist = ArchivistAgent(self.kg, output_dir)
+        if self.no_llm:
+            # Disable LLM calls in semanticist
+            self.semanticist.force_static = True
+        self.archivist = ArchivistAgent(self.kg, self.output_dir)
 
     def _get_current_commit(self):
         try:
@@ -107,7 +111,8 @@ class CartographyOrchestrator:
         # Phase 4: Archivist
         logger.info("Agent 4: Archivist -> Generating Living Context Artifacts")
         self.archivist.generate_CODEBASE_md(self.surveyor)
-        self.archivist.write_onboarding_brief(self.semanticist)
+        self.archivist.write_onboarding_brief(self.semanticist, self.surveyor)
+        self.archivist.generate_interim_report(self.surveyor)
 
         # Final Graph Serialization
         self.kg.serialize(os.path.join(self.output_dir, "lineage_graph.json"))

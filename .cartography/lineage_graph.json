@@ -3,8 +3,8 @@
     "tr:sql_transform_customers.sql": {
       "name": "sql_transform_customers.sql",
       "source_datasets": [
-        "stg_orders",
         "stg_payments",
+        "stg_orders",
         "stg_customers"
       ],
       "target_datasets": [
@@ -58,8 +58,8 @@
     "tr:sql_transform_orders.sql": {
       "name": "sql_transform_orders.sql",
       "source_datasets": [
-        "stg_orders",
-        "stg_payments"
+        "stg_payments",
+        "stg_orders"
       ],
       "target_datasets": [
         "orders"
@@ -341,9 +341,9 @@
     "src\\cli.py": {
       "path": "src\\cli.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 119.0,
+      "complexity_score": 126.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -401,9 +401,9 @@
     "src\\orchestrator.py": {
       "path": "src\\orchestrator.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 105.0,
+      "complexity_score": 126.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -479,9 +479,9 @@
     "src\\agents\\archivist.py": {
       "path": "src\\agents\\archivist.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 111.0,
+      "complexity_score": 357.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -489,6 +489,7 @@
         "import os",
         "import json",
         "import logging",
+        "import networkx as nx",
         "from datetime import datetime",
         "from src.graph.knowledge_graph import KnowledgeGraph",
         "from src.agents.semanticist import SemanticistAgent",
@@ -512,6 +513,14 @@
           "is_public_api": true
         },
         {
+          "qualified_name": "src\\agents\\archivist.py._static_day_one_brief",
+          "parent_module": "src\\agents\\archivist.py",
+          "signature": "_static_day_one_brief",
+          "purpose_statement": null,
+          "call_count_within_repo": 0,
+          "is_public_api": false
+        },
+        {
           "qualified_name": "src\\agents\\archivist.py.write_onboarding_brief",
           "parent_module": "src\\agents\\archivist.py",
           "signature": "write_onboarding_brief",
@@ -523,6 +532,14 @@
           "qualified_name": "src\\agents\\archivist.py.generate_CODEBASE_md",
           "parent_module": "src\\agents\\archivist.py",
           "signature": "generate_CODEBASE_md",
+          "purpose_statement": null,
+          "call_count_within_repo": 0,
+          "is_public_api": true
+        },
+        {
+          "qualified_name": "src\\agents\\archivist.py.generate_interim_report",
+          "parent_module": "src\\agents\\archivist.py",
+          "signature": "generate_interim_report",
           "purpose_statement": null,
           "call_count_within_repo": 0,
           "is_public_api": true
@@ -542,7 +559,7 @@
     "src\\agents\\hydrologist.py": {
       "path": "src\\agents\\hydrologist.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
       "complexity_score": 116.0,
       "change_velocity_30d": 0,
@@ -632,9 +649,9 @@
     "src\\agents\\navigator.py": {
       "path": "src\\agents\\navigator.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 175.0,
+      "complexity_score": 191.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -720,9 +737,9 @@
     "src\\agents\\semanticist.py": {
       "path": "src\\agents\\semanticist.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 238.0,
+      "complexity_score": 253.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -833,9 +850,9 @@
     "src\\agents\\surveyor.py": {
       "path": "src\\agents\\surveyor.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 215.0,
+      "complexity_score": 217.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -1023,15 +1040,14 @@
     "src\\analyzers\\python_lineage.py": {
       "path": "src\\analyzers\\python_lineage.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 112.0,
+      "complexity_score": 109.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
       "imports": [
         "import re",
-        "import ast",
         "from typing import List",
         "from src.models.nodes import TransformationNode"
       ],
@@ -1162,9 +1178,9 @@
     "src\\analyzers\\tree_sitter_analyzer.py": {
       "path": "src\\analyzers\\tree_sitter_analyzer.py",
       "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
+      "purpose_statement": null,
       "domain_cluster": null,
-      "complexity_score": 185.0,
+      "complexity_score": 192.0,
       "change_velocity_30d": 0,
       "is_dead_code_candidate": false,
       "last_modified": null,
@@ -1175,7 +1191,7 @@
         "import logging",
         "import tree_sitter_sql as tssql",
         "import re",
-        "from tree_sitter import Language, Parser, Query",
+        "from tree_sitter import Language, Parser",
         "from typing import List, Dict, Any, Optional"
       ],
       "functions": [
@@ -1715,8 +1731,8 @@
       "transformation_type": "pandas_read",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        29,
-        29
+        28,
+        28
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1750,8 +1766,8 @@
       "transformation_type": "pandas_write",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        47,
-        47
+        46,
+        46
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1767,8 +1783,8 @@
       "transformation_type": "pandas_write",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        47,
-        47
+        46,
+        46
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1784,8 +1800,8 @@
       "transformation_type": "spark_read",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        72,
-        72
+        69,
+        69
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1810,8 +1826,8 @@
       "transformation_type": "spark_read",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        72,
-        72
+        69,
+        69
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1827,8 +1843,8 @@
       "transformation_type": "spark_write",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        90,
-        90
+        87,
+        87
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -1844,8 +1860,8 @@
       "transformation_type": "spark_write",
       "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
       "line_range": [
-        90,
-        90
+        87,
+        87
       ],
       "sql_query_if_applicable": null,
       "type": "transformation"
@@ -2221,7 +2237,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 29,
+        "source_line": 28,
         "confidence": 1.0
       }
     },
@@ -2235,7 +2251,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 29,
+        "source_line": 28,
         "confidence": 1.0
       }
     },
@@ -2249,7 +2265,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 72,
+        "source_line": 69,
         "confidence": 1.0
       }
     },
@@ -2263,7 +2279,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 72,
+        "source_line": 69,
         "confidence": 1.0
       }
     },
@@ -2277,7 +2293,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 47,
+        "source_line": 46,
         "confidence": 1.0
       }
     },
@@ -2291,7 +2307,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 47,
+        "source_line": 46,
         "confidence": 1.0
       }
     },
@@ -2305,7 +2321,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 47,
+        "source_line": 46,
         "confidence": 1.0
       }
     },
@@ -2319,7 +2335,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 47,
+        "source_line": 46,
         "confidence": 1.0
       }
     },
@@ -2333,7 +2349,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 72,
+        "source_line": 69,
         "confidence": 1.0
       }
     },
@@ -2347,7 +2363,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 90,
+        "source_line": 87,
         "confidence": 1.0
       }
     },
@@ -2361,7 +2377,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 90,
+        "source_line": 87,
         "confidence": 1.0
       }
     },
@@ -2375,7 +2391,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 72,
+        "source_line": 69,
         "confidence": 1.0
       }
     },
@@ -2389,7 +2405,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 90,
+        "source_line": 87,
         "confidence": 1.0
       }
     },
@@ -2403,7 +2419,7 @@
         "properties": {
           "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
         },
-        "source_line": 90,
+        "source_line": 87,
         "confidence": 1.0
       }
     }

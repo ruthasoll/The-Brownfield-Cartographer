@@ -41,6 +41,7 @@ class SemanticistAgent:
         self.kg = kg
         self.repo_path = repo_path
         self.budget = ContextWindowBudget()
+        self.force_static = False
 
         # Initialize Gemini Client if API key is present
         api_key = os.environ.get("GEMINI_API_KEY", "")
@@ -54,7 +55,7 @@ class SemanticistAgent:
             )
 
     def _call_llm(self, prompt: str, system_instruction: str = None) -> Optional[str]:
-        if not self.client:
+        if self.force_static or not self.client:
             return None
 
         try:

@@ -46,6 +46,9 @@ def main():
     analyze_parser.add_argument(
         "--output-dir", default=".cartography", help="Directory for analysis artifacts"
     )
+    analyze_parser.add_argument(
+        "--no-llm", action="store_true", help="Force static analysis only, skipping LLM calls"
+    )
 
     # Query command
     query_parser = subparsers.add_parser(
@@ -77,7 +80,7 @@ def main():
         try:
             from src.orchestrator import CartographyOrchestrator
 
-            orchestrator = CartographyOrchestrator(repo_path, output_dir)
+            orchestrator = CartographyOrchestrator(repo_path, output_dir, no_llm=args.no_llm)
             orchestrator.run_pipeline()
 
         except Exception as e:
