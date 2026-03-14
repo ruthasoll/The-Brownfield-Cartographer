@@ -43,7 +43,7 @@ class SemanticistAgent:
         self.budget = ContextWindowBudget()
         self.force_static = False
 
-        self.model_name = "gemini-2.0-flash"
+        self.model_name = "gemini-1.5-flash"
         self.heavy_model_name = "gemini-1.5-pro"
 
         # Initialize Gemini Client if API key is present
