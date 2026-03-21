@@ -1,17 +1,150 @@
 {
   "nodes": {
+    "dbt_project.yml": {
+      "path": "dbt_project.yml",
+      "language": "yaml",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 26.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\customers.sql": {
+      "path": "models\\customers.sql",
+      "language": "sql",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 69.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [
+        "stg_payments",
+        "stg_orders",
+        "stg_customers"
+      ],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\orders.sql": {
+      "path": "models\\orders.sql",
+      "language": "sql",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 56.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [
+        "stg_payments",
+        "stg_orders"
+      ],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\schema.yml": {
+      "path": "models\\schema.yml",
+      "language": "yaml",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 82.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\staging\\schema.yml": {
+      "path": "models\\staging\\schema.yml",
+      "language": "yaml",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 31.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\staging\\stg_customers.sql": {
+      "path": "models\\staging\\stg_customers.sql",
+      "language": "sql",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 22.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [
+        "raw_customers"
+      ],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\staging\\stg_orders.sql": {
+      "path": "models\\staging\\stg_orders.sql",
+      "language": "sql",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 23.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [
+        "raw_orders"
+      ],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
+    "models\\staging\\stg_payments.sql": {
+      "path": "models\\staging\\stg_payments.sql",
+      "language": "sql",
+      "purpose_statement": null,
+      "domain_cluster": null,
+      "complexity_score": 25.0,
+      "change_velocity_30d": 0,
+      "is_dead_code_candidate": false,
+      "last_modified": null,
+      "imports": [
+        "raw_payments"
+      ],
+      "functions": [],
+      "classes": [],
+      "drift_report": null,
+      "type": "module"
+    },
     "tr:sql_transform_customers.sql": {
       "name": "sql_transform_customers.sql",
       "source_datasets": [
-        "stg_customers",
         "stg_payments",
-        "stg_orders"
+        "stg_orders",
+        "stg_customers"
       ],
       "target_datasets": [
         "customers"
       ],
       "transformation_type": "sql_query",
-      "source_file": "target_jaffle_shop\\models\\customers.sql",
+      "source_file": "models\\customers.sql",
       "line_range": [
         1,
         69
@@ -65,7 +198,7 @@
         "orders"
       ],
       "transformation_type": "sql_query",
-      "source_file": "target_jaffle_shop\\models\\orders.sql",
+      "source_file": "models\\orders.sql",
       "line_range": [
         1,
         56
@@ -166,7 +299,7 @@
         "stg_customers"
       ],
       "transformation_type": "sql_query",
-      "source_file": "target_jaffle_shop\\models\\staging\\stg_customers.sql",
+      "source_file": "models\\staging\\stg_customers.sql",
       "line_range": [
         1,
         22
@@ -192,7 +325,7 @@
         "stg_orders"
       ],
       "transformation_type": "sql_query",
-      "source_file": "target_jaffle_shop\\models\\staging\\stg_orders.sql",
+      "source_file": "models\\staging\\stg_orders.sql",
       "line_range": [
         1,
         23
@@ -218,7 +351,7 @@
         "stg_payments"
       ],
       "transformation_type": "sql_query",
-      "source_file": "target_jaffle_shop\\models\\staging\\stg_payments.sql",
+      "source_file": "models\\staging\\stg_payments.sql",
       "line_range": [
         1,
         25
@@ -234,1650 +367,79 @@
       "owner": null,
       "is_source_of_truth": false,
       "type": "dataset"
-    },
-    ".pre-commit-config.yaml": {
-      "path": ".pre-commit-config.yaml",
-      "language": "yaml",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 6.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "test_verification.py": {
-      "path": "test_verification.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 90.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import sys",
-        "from src.models.edges import EdgeMetadata, RelationshipType",
-        "from src.models.nodes import ModuleNode",
-        "from src.graph.knowledge_graph import KnowledgeGraph",
-        "from src.analyzers.sql_lineage import SQLLineageAnalyzer",
-        "from src.agents.surveyor import SurveyorAgent"
-      ],
-      "functions": [
-        {
-          "qualified_name": "test_verification.py.test_schema_validation",
-          "parent_module": "test_verification.py",
-          "signature": "test_schema_validation",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "test_verification.py.test_cte_resolution",
-          "parent_module": "test_verification.py",
-          "signature": "test_cte_resolution",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "test_verification.py.test_circular_detection",
-          "parent_module": "test_verification.py",
-          "signature": "test_circular_detection",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [],
-      "type": "module"
-    },
-    "RECONNAISSANCE_SNIPPETS\\customer_aggregation.sql": {
-      "path": "RECONNAISSANCE_SNIPPETS\\customer_aggregation.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 9.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "RECONNAISSANCE_SNIPPETS\\payments_pivot.sql": {
-      "path": "RECONNAISSANCE_SNIPPETS\\payments_pivot.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 10.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "RECONNAISSANCE_SNIPPETS\\stg_payments_conversion.sql": {
-      "path": "RECONNAISSANCE_SNIPPETS\\stg_payments_conversion.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 9.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\cli.py": {
-      "path": "src\\cli.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 128.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import argparse",
-        "import os",
-        "import sys",
-        "import shutil",
-        "import subprocess",
-        "import logging",
-        "import tempfile",
-        "import traceback",
-        "import stat",
-        "from src.orchestrator import CartographyOrchestrator",
-        "from src.graph.knowledge_graph import KnowledgeGraph",
-        "from src.agents.navigator import NavigatorAgent",
-        "from src.agents.archivist import ArchivistAgent"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\cli.py.setup_logging",
-          "parent_module": "src\\cli.py",
-          "signature": "setup_logging",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\cli.py.clone_repo",
-          "parent_module": "src\\cli.py",
-          "signature": "clone_repo",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\cli.py.main",
-          "parent_module": "src\\cli.py",
-          "signature": "main",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\cli.py.remove_readonly",
-          "parent_module": "src\\cli.py",
-          "signature": "remove_readonly",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\orchestrator.py": {
-      "path": "src\\orchestrator.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 126.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import logging",
-        "import subprocess",
-        "from src.agents.surveyor import SurveyorAgent",
-        "from src.agents.hydrologist import HydrologistAgent",
-        "from src.agents.semanticist import SemanticistAgent",
-        "from src.agents.archivist import ArchivistAgent",
-        "from src.graph.knowledge_graph import KnowledgeGraph"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\orchestrator.py.__init__",
-          "parent_module": "src\\orchestrator.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\orchestrator.py._get_current_commit",
-          "parent_module": "src\\orchestrator.py",
-          "signature": "_get_current_commit",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\orchestrator.py._get_changed_files",
-          "parent_module": "src\\orchestrator.py",
-          "signature": "_get_changed_files",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\orchestrator.py.run_pipeline",
-          "parent_module": "src\\orchestrator.py",
-          "signature": "run_pipeline",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "CartographyOrchestrator",
-          "parent_module": "src\\orchestrator.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\__init__.py": {
-      "path": "src\\__init__.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 0.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\agents\\archivist.py": {
-      "path": "src\\agents\\archivist.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 359.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import json",
-        "import logging",
-        "import networkx as nx",
-        "from datetime import datetime",
-        "from src.graph.knowledge_graph import KnowledgeGraph",
-        "from src.agents.semanticist import SemanticistAgent",
-        "from src.agents.surveyor import SurveyorAgent"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\agents\\archivist.py.__init__",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\archivist.py.log_trace",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "log_trace",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\archivist.py._static_day_one_brief",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "_static_day_one_brief",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\archivist.py.write_onboarding_brief",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "write_onboarding_brief",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\archivist.py.generate_CODEBASE_md",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "generate_CODEBASE_md",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\archivist.py.generate_interim_report",
-          "parent_module": "src\\agents\\archivist.py",
-          "signature": "generate_interim_report",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "ArchivistAgent",
-          "parent_module": "src\\agents\\archivist.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\agents\\hydrologist.py": {
-      "path": "src\\agents\\hydrologist.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 116.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import networkx as nx",
-        "import logging",
-        "from typing import List, Dict, Any",
-        "from src.models.nodes import DatasetNode, TransformationNode",
-        "from src.models.edges import RelationshipType, EdgeMetadata",
-        "from src.analyzers.python_lineage import PythonDataFlowAnalyzer",
-        "from src.analyzers.sql_lineage import SQLLineageAnalyzer",
-        "from src.analyzers.dag_config_parser import DAGConfigAnalyzer",
-        "from src.graph.knowledge_graph import KnowledgeGraph"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.__init__",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.analyze_lineage",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "analyze_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.build_graph",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "build_graph",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.blast_radius",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "blast_radius",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.reverse_blast_radius",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "reverse_blast_radius",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.find_path_between",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "find_path_between",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\hydrologist.py.save_lineage",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "signature": "save_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "HydrologistAgent",
-          "parent_module": "src\\agents\\hydrologist.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\agents\\navigator.py": {
-      "path": "src\\agents\\navigator.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 191.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import logging",
-        "import networkx as nx",
-        "from typing import Literal",
-        "from langchain_core.tools import tool",
-        "from langchain_google_genai import ChatGoogleGenerativeAI",
-        "from langgraph.prebuilt import create_react_agent",
-        "from src.graph.knowledge_graph import KnowledgeGraph"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\agents\\navigator.py.__init__",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py._build_tools",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "_build_tools",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py.find_implementation",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "find_implementation",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py.trace_lineage",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "trace_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py.blast_radius",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "blast_radius",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py.explain_module",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "explain_module",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\navigator.py.interactive_shell",
-          "parent_module": "src\\agents\\navigator.py",
-          "signature": "interactive_shell",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "NavigatorAgent",
-          "parent_module": "src\\agents\\navigator.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\agents\\semanticist.py": {
-      "path": "src\\agents\\semanticist.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 253.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import json",
-        "import logging",
-        "from typing import Optional",
-        "from google import genai",
-        "from google.genai import types",
-        "from sklearn.feature_extraction.text import TfidfVectorizer",
-        "from sklearn.cluster import KMeans",
-        "from src.models.nodes import ModuleNode",
-        "from src.graph.knowledge_graph import KnowledgeGraph"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\agents\\semanticist.py.__init__",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.log_usage",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "log_usage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.summary",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "summary",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.__init__",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py._call_llm",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "_call_llm",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.generate_purpose_statement",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "generate_purpose_statement",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.cluster_into_domains",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "cluster_into_domains",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.run_bulk_semantics",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "run_bulk_semantics",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\semanticist.py.answer_day_one_questions",
-          "parent_module": "src\\agents\\semanticist.py",
-          "signature": "answer_day_one_questions",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "ContextWindowBudget",
-          "parent_module": "src\\agents\\semanticist.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "SemanticistAgent",
-          "parent_module": "src\\agents\\semanticist.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\agents\\surveyor.py": {
-      "path": "src\\agents\\surveyor.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 217.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "import subprocess",
-        "import networkx as nx",
-        "import json",
-        "import logging",
-        "import re",
-        "from typing import Dict, Optional",
-        "from collections import Counter",
-        "from src.models.nodes import ModuleNode, FunctionNode, ClassNode",
-        "from src.models.edges import RelationshipType, EdgeMetadata",
-        "from src.analyzers.tree_sitter_analyzer import TreeSitterAnalyzer",
-        "from src.graph.knowledge_graph import KnowledgeGraph"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\agents\\surveyor.py.__init__",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.analyze_codebase",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "analyze_codebase",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.analyze_module",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "analyze_module",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py._track_symbol_usage",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "_track_symbol_usage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.build_import_graph",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "build_import_graph",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.calculate_pagerank",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "calculate_pagerank",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.detect_circular_dependencies",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "detect_circular_dependencies",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.detect_dead_code",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "detect_dead_code",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.extract_git_velocity",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "extract_git_velocity",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.generate_summary",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "generate_summary",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\agents\\surveyor.py.save_graph",
-          "parent_module": "src\\agents\\surveyor.py",
-          "signature": "save_graph",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "SurveyorAgent",
-          "parent_module": "src\\agents\\surveyor.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\agents\\__init__.py": {
-      "path": "src\\agents\\__init__.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 0.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\analyzers\\dag_config_parser.py": {
-      "path": "src\\analyzers\\dag_config_parser.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 74.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import yaml",
-        "import re",
-        "from typing import List",
-        "from src.models.nodes import TransformationNode"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\analyzers\\dag_config_parser.py.__init__",
-          "parent_module": "src\\analyzers\\dag_config_parser.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\dag_config_parser.py.parse_dbt_schema",
-          "parent_module": "src\\analyzers\\dag_config_parser.py",
-          "signature": "parse_dbt_schema",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\dag_config_parser.py.parse_airflow_dag",
-          "parent_module": "src\\analyzers\\dag_config_parser.py",
-          "signature": "parse_airflow_dag",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "DAGConfigAnalyzer",
-          "parent_module": "src\\analyzers\\dag_config_parser.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\analyzers\\python_lineage.py": {
-      "path": "src\\analyzers\\python_lineage.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 109.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import re",
-        "from typing import List",
-        "from src.models.nodes import TransformationNode"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\analyzers\\python_lineage.py.__init__",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\python_lineage.py.extract_lineage",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "signature": "extract_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\python_lineage.py.detect_pandas_io",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "signature": "detect_pandas_io",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\python_lineage.py.detect_spark_io",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "signature": "detect_spark_io",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\python_lineage.py.detect_sqlalchemy_io",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "signature": "detect_sqlalchemy_io",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "PythonDataFlowAnalyzer",
-          "parent_module": "src\\analyzers\\python_lineage.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\analyzers\\sql_lineage.py": {
-      "path": "src\\analyzers\\sql_lineage.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 116.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import sqlglot",
-        "import os",
-        "import re",
-        "import logging",
-        "from sqlglot import exp",
-        "from typing import List, Set",
-        "from src.models.nodes import TransformationNode"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\analyzers\\sql_lineage.py.__init__",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\sql_lineage.py.extract_lineage",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "signature": "extract_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\sql_lineage.py._extract_dbt_refs",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "signature": "_extract_dbt_refs",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\sql_lineage.py._extract_sources",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "signature": "_extract_sources",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\sql_lineage.py._extract_targets",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "signature": "_extract_targets",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        }
-      ],
-      "classes": [
-        {
-          "name": "SQLLineageAnalyzer",
-          "parent_module": "src\\analyzers\\sql_lineage.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\analyzers\\tree_sitter_analyzer.py": {
-      "path": "src\\analyzers\\tree_sitter_analyzer.py",
-      "language": "python",
-      "purpose_statement": null,
-      "domain_cluster": null,
-      "complexity_score": 192.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import tree_sitter_python as tspython",
-        "import tree_sitter_yaml as tsyaml",
-        "import os",
-        "import logging",
-        "import tree_sitter_sql as tssql",
-        "import re",
-        "from tree_sitter import Language, Parser",
-        "from typing import List, Dict, Any, Optional"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py.__init__",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py.get_parser",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "get_parser",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py.extract_structure",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "extract_structure",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._walk",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_walk",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._get_captures",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_get_captures",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_python_imports",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_python_imports",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_python_functions",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_python_functions",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_python_classes",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_python_classes",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_sql_refs",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_sql_refs",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_sql_tables",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_sql_tables",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py._extract_yaml_hierarchy",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "_extract_yaml_hierarchy",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\analyzers\\tree_sitter_analyzer.py.walk",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "signature": "walk",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "TreeSitterAnalyzer",
-          "parent_module": "src\\analyzers\\tree_sitter_analyzer.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\analyzers\\__init__.py": {
-      "path": "src\\analyzers\\__init__.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 0.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\graph\\knowledge_graph.py": {
-      "path": "src\\graph\\knowledge_graph.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 59.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import networkx as nx",
-        "import json",
-        "import os",
-        "from typing import Dict, Any, List, Optional, TypeVar",
-        "from pydantic import BaseModel",
-        "from src.models.edges import EdgeMetadata"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.__init__",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "__init__",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": false
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.add_node",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "add_node",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.add_edge",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "add_edge",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.get_node_data",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "get_node_data",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.serialize",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "serialize",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.deserialize",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "deserialize",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\graph\\knowledge_graph.py.search_by_type",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "signature": "search_by_type",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "KnowledgeGraph",
-          "parent_module": "src\\graph\\knowledge_graph.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\graph\\__init__.py": {
-      "path": "src\\graph\\__init__.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 0.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "src\\models\\edges.py": {
-      "path": "src\\models\\edges.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 25.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "from enum import Enum",
-        "from pydantic import BaseModel, Field, validator",
-        "from typing import Optional, Dict, Any"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\models\\edges.py.weight_must_be_positive",
-          "parent_module": "src\\models\\edges.py",
-          "signature": "weight_must_be_positive",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "RelationshipType",
-          "parent_module": "src\\models\\edges.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "EdgeMetadata",
-          "parent_module": "src\\models\\edges.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\models\\nodes.py": {
-      "path": "src\\models\\nodes.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 66.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "import os",
-        "from pydantic import BaseModel, validator",
-        "from typing import List, Optional, Dict, Any",
-        "from datetime import datetime"
-      ],
-      "functions": [
-        {
-          "qualified_name": "src\\models\\nodes.py.path_must_not_be_absolute",
-          "parent_module": "src\\models\\nodes.py",
-          "signature": "path_must_not_be_absolute",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        },
-        {
-          "qualified_name": "src\\models\\nodes.py.score_must_be_non_negative",
-          "parent_module": "src\\models\\nodes.py",
-          "signature": "score_must_be_non_negative",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [
-        {
-          "name": "FunctionNode",
-          "parent_module": "src\\models\\nodes.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "ClassNode",
-          "parent_module": "src\\models\\nodes.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "ModuleNode",
-          "parent_module": "src\\models\\nodes.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "DatasetNode",
-          "parent_module": "src\\models\\nodes.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        },
-        {
-          "name": "TransformationNode",
-          "parent_module": "src\\models\\nodes.py",
-          "base_classes": [],
-          "methods": [],
-          "purpose_statement": null
-        }
-      ],
-      "type": "module"
-    },
-    "src\\models\\__init__.py": {
-      "path": "src\\models\\__init__.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 0.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\dbt_project.yml": {
-      "path": "target_jaffle_shop\\dbt_project.yml",
-      "language": "yaml",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 26.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\customers.sql": {
-      "path": "target_jaffle_shop\\models\\customers.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 69.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "stg_orders",
-        "stg_payments",
-        "stg_customers"
-      ],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\orders.sql": {
-      "path": "target_jaffle_shop\\models\\orders.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 56.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "stg_orders",
-        "stg_payments"
-      ],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\schema.yml": {
-      "path": "target_jaffle_shop\\models\\schema.yml",
-      "language": "yaml",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 82.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\staging\\schema.yml": {
-      "path": "target_jaffle_shop\\models\\staging\\schema.yml",
-      "language": "yaml",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 31.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\staging\\stg_customers.sql": {
-      "path": "target_jaffle_shop\\models\\staging\\stg_customers.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 22.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "raw_customers"
-      ],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\staging\\stg_orders.sql": {
-      "path": "target_jaffle_shop\\models\\staging\\stg_orders.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 23.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "raw_orders"
-      ],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "target_jaffle_shop\\models\\staging\\stg_payments.sql": {
-      "path": "target_jaffle_shop\\models\\staging\\stg_payments.sql",
-      "language": "sql",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 25.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "raw_payments"
-      ],
-      "functions": [],
-      "classes": [],
-      "type": "module"
-    },
-    "tests\\test_router.py": {
-      "path": "tests\\test_router.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 28.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "from src.analyzers.tree_sitter_analyzer import LanguageRouter"
-      ],
-      "functions": [
-        {
-          "qualified_name": "tests\\test_router.py.test_language_router",
-          "parent_module": "tests\\test_router.py",
-          "signature": "test_language_router",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [],
-      "type": "module"
-    },
-    "tests\\test_sql_lineage.py": {
-      "path": "tests\\test_sql_lineage.py",
-      "language": "python",
-      "purpose_statement": "LLM Extraction Offline (No API Key or Error)",
-      "domain_cluster": null,
-      "complexity_score": 36.0,
-      "change_velocity_30d": 0,
-      "is_dead_code_candidate": false,
-      "last_modified": null,
-      "imports": [
-        "from src.analyzers.sql_lineage import SQLLineageAnalyzer"
-      ],
-      "functions": [
-        {
-          "qualified_name": "tests\\test_sql_lineage.py.test_sql_lineage",
-          "parent_module": "tests\\test_sql_lineage.py",
-          "signature": "test_sql_lineage",
-          "purpose_statement": null,
-          "call_count_within_repo": 0,
-          "is_public_api": true
-        }
-      ],
-      "classes": [],
-      "type": "module"
-    },
-    "tr:pandas_read_csv": {
-      "name": "pandas_read_csv",
-      "source_datasets": [
-        "path"
-      ],
-      "target_datasets": [
-        "df_variable"
-      ],
-      "transformation_type": "pandas_read",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        28,
-        28
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "ds:path": {
-      "name": "path",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
-    },
-    "ds:df_variable": {
-      "name": "df_variable",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
-    },
-    "tr:pandas_to_csv": {
-      "name": "pandas_to_csv",
-      "source_datasets": [
-        "df_variable"
-      ],
-      "target_datasets": [
-        "path"
-      ],
-      "transformation_type": "pandas_write",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        46,
-        46
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "tr:pandas_to_parquet": {
-      "name": "pandas_to_parquet",
-      "source_datasets": [
-        "df_variable"
-      ],
-      "target_datasets": [
-        "path"
-      ],
-      "transformation_type": "pandas_write",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        46,
-        46
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "tr:spark_read_csv": {
-      "name": "spark_read_csv",
-      "source_datasets": [
-        "path"
-      ],
-      "target_datasets": [
-        "spark_df"
-      ],
-      "transformation_type": "spark_read",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        69,
-        69
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "ds:spark_df": {
-      "name": "spark_df",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
-    },
-    "tr:spark_read_parquet": {
-      "name": "spark_read_parquet",
-      "source_datasets": [
-        "path"
-      ],
-      "target_datasets": [
-        "spark_df"
-      ],
-      "transformation_type": "spark_read",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        69,
-        69
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "tr:spark_write_parquet": {
-      "name": "spark_write_parquet",
-      "source_datasets": [
-        "spark_df"
-      ],
-      "target_datasets": [
-        "path"
-      ],
-      "transformation_type": "spark_write",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        87,
-        87
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "tr:spark_write_saveAsTable": {
-      "name": "spark_write_saveAsTable",
-      "source_datasets": [
-        "spark_df"
-      ],
-      "target_datasets": [
-        "table"
-      ],
-      "transformation_type": "spark_write",
-      "source_file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py",
-      "line_range": [
-        87,
-        87
-      ],
-      "sql_query_if_applicable": null,
-      "type": "transformation"
-    },
-    "ds:table": {
-      "name": "table",
-      "storage_type": "unknown",
-      "schema_snapshot": null,
-      "freshness_sla": null,
-      "owner": null,
-      "is_source_of_truth": false,
-      "type": "dataset"
     }
   },
   "edges": [
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_payments.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_payments"
+        },
+        "source_line": null,
+        "confidence": 0.9
+      }
+    },
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_orders.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_orders"
+        },
+        "source_line": null,
+        "confidence": 0.9
+      }
+    },
+    {
+      "source": "models\\customers.sql",
+      "target": "models\\staging\\stg_customers.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_customers"
+        },
+        "source_line": null,
+        "confidence": 0.9
+      }
+    },
+    {
+      "source": "models\\orders.sql",
+      "target": "models\\staging\\stg_payments.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_payments"
+        },
+        "source_line": null,
+        "confidence": 0.9
+      }
+    },
+    {
+      "source": "models\\orders.sql",
+      "target": "models\\staging\\stg_orders.sql",
+      "key": "imports",
+      "metadata": {
+        "rel_type": "imports",
+        "weight": 1.0,
+        "properties": {
+          "import_name": "stg_orders"
+        },
+        "source_line": null,
+        "confidence": 0.9
+      }
+    },
     {
       "source": "tr:sql_transform_customers.sql",
       "target": "ds:customers",
@@ -1886,7 +448,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\customers.sql"
+          "file": "models\\customers.sql",
+          "line_range": [
+            1,
+            69
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1900,7 +467,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\customers.sql"
+          "file": "models\\customers.sql",
+          "line_range": [
+            1,
+            69
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1914,7 +486,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\orders.sql"
+          "file": "models\\orders.sql",
+          "line_range": [
+            1,
+            56
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1928,7 +505,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\customers.sql"
+          "file": "models\\customers.sql",
+          "line_range": [
+            1,
+            69
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1942,7 +524,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\orders.sql"
+          "file": "models\\orders.sql",
+          "line_range": [
+            1,
+            56
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1956,7 +543,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\customers.sql"
+          "file": "models\\customers.sql",
+          "line_range": [
+            1,
+            69
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1970,7 +562,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\orders.sql"
+          "file": "models\\orders.sql",
+          "line_range": [
+            1,
+            56
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1984,7 +581,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml"
+          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
+          "line_range": [
+            1,
+            1
+          ],
+          "transformation_type": "dbt_model"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -1998,7 +600,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml"
+          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\schema.yml",
+          "line_range": [
+            1,
+            1
+          ],
+          "transformation_type": "dbt_model"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2012,7 +619,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml"
+          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+          "line_range": [
+            1,
+            1
+          ],
+          "transformation_type": "dbt_model"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2026,7 +638,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml"
+          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+          "line_range": [
+            1,
+            1
+          ],
+          "transformation_type": "dbt_model"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2040,7 +657,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml"
+          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\target_jaffle_shop\\models\\staging\\schema.yml",
+          "line_range": [
+            1,
+            1
+          ],
+          "transformation_type": "dbt_model"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2054,7 +676,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_customers.sql"
+          "file": "models\\staging\\stg_customers.sql",
+          "line_range": [
+            1,
+            22
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2068,7 +695,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_customers.sql"
+          "file": "models\\staging\\stg_customers.sql",
+          "line_range": [
+            1,
+            22
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2082,7 +714,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_orders.sql"
+          "file": "models\\staging\\stg_orders.sql",
+          "line_range": [
+            1,
+            23
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2096,7 +733,12 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_orders.sql"
+          "file": "models\\staging\\stg_orders.sql",
+          "line_range": [
+            1,
+            23
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2110,7 +752,12 @@
         "rel_type": "writes",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_payments.sql"
+          "file": "models\\staging\\stg_payments.sql",
+          "line_range": [
+            1,
+            25
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
         "confidence": 1.0
@@ -2124,303 +771,14 @@
         "rel_type": "reads",
         "weight": 1.0,
         "properties": {
-          "file": "target_jaffle_shop\\models\\staging\\stg_payments.sql"
+          "file": "models\\staging\\stg_payments.sql",
+          "line_range": [
+            1,
+            25
+          ],
+          "transformation_type": "sql_query"
         },
         "source_line": 1,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\customers.sql",
-      "target": "target_jaffle_shop\\models\\staging\\stg_orders.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_orders"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\customers.sql",
-      "target": "RECONNAISSANCE_SNIPPETS\\stg_payments_conversion.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_payments"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\customers.sql",
-      "target": "target_jaffle_shop\\models\\staging\\stg_payments.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_payments"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\customers.sql",
-      "target": "target_jaffle_shop\\models\\staging\\stg_customers.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_customers"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\orders.sql",
-      "target": "target_jaffle_shop\\models\\staging\\stg_orders.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_orders"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\orders.sql",
-      "target": "RECONNAISSANCE_SNIPPETS\\stg_payments_conversion.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_payments"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "target_jaffle_shop\\models\\orders.sql",
-      "target": "target_jaffle_shop\\models\\staging\\stg_payments.sql",
-      "key": "imports",
-      "metadata": {
-        "rel_type": "imports",
-        "weight": 1.0,
-        "properties": {
-          "import_name": "stg_payments"
-        },
-        "source_line": null,
-        "confidence": 0.9
-      }
-    },
-    {
-      "source": "tr:pandas_read_csv",
-      "target": "ds:df_variable",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 28,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:path",
-      "target": "tr:pandas_read_csv",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 28,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:path",
-      "target": "tr:spark_read_csv",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 69,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:path",
-      "target": "tr:spark_read_parquet",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 69,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:df_variable",
-      "target": "tr:pandas_to_csv",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 46,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:df_variable",
-      "target": "tr:pandas_to_parquet",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 46,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:pandas_to_csv",
-      "target": "ds:path",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 46,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:pandas_to_parquet",
-      "target": "ds:path",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 46,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:spark_read_csv",
-      "target": "ds:spark_df",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 69,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:spark_df",
-      "target": "tr:spark_write_parquet",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 87,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "ds:spark_df",
-      "target": "tr:spark_write_saveAsTable",
-      "key": "reads",
-      "metadata": {
-        "rel_type": "reads",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 87,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:spark_read_parquet",
-      "target": "ds:spark_df",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 69,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:spark_write_parquet",
-      "target": "ds:path",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 87,
-        "confidence": 1.0
-      }
-    },
-    {
-      "source": "tr:spark_write_saveAsTable",
-      "target": "ds:table",
-      "key": "writes",
-      "metadata": {
-        "rel_type": "writes",
-        "weight": 1.0,
-        "properties": {
-          "file": "C:\\Users\\ruths\\Desktop\\TRP1\\The-Brownfield-Cartographer\\src\\analyzers\\python_lineage.py"
-        },
-        "source_line": 87,
         "confidence": 1.0
       }
     }

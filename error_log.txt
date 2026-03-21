@@ -1,9 +1,8 @@
 Traceback (most recent call last):
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\cli.py", line 79, in main
-    orchestrator.run_pipeline()
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\orchestrator.py", line 93, in run_pipeline
-    self.archivist.generate_CODEBASE_md(self.surveyor)
-  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\agents\archivist.py", line 65, in generate_CODEBASE_md
-    drift_md = "\n".join([f"- `{m.path}` (Doc string differs from implementation)" for m in modules if "Documentation Drift" in getattr(m, 'purpose_statement', '')])
-                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: argument of type 'NoneType' is not iterable
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\cli.py", line 81, in main
+    from src.orchestrator import CartographyOrchestrator
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\orchestrator.py", line 6, in <module>
+    from src.agents.semanticist import SemanticistAgent
+  File "C:\Users\ruths\Desktop\TRP1\The-Brownfield-Cartographer\src\agents\semanticist.py", line 5, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
